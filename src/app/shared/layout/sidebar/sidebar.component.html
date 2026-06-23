@@ -1,0 +1,85 @@
+<div class="sidebar">
+
+  <!-- Logo -->
+  <div class="sidebar-logo">
+    <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
+      <rect width="48" height="48" rx="10" fill="rgba(255,255,255,0.15)"/>
+      <path d="M12 16h8l4 8 4-8h8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M12 32h8l4-8 4 8h8" stroke="#2D7DD2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="24" cy="24" r="2.5" fill="#2D7DD2"/>
+    </svg>
+    <span class="logo-name">{{ 'APP.NAME' | translate }}</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <!-- Dashboard -->
+    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+      <mat-icon>home</mat-icon>
+      <span>{{ 'NAV.DASHBOARD' | translate }}</span>
+    </a>
+
+    <!-- Administración (solo Admin) -->
+    <div *appHasRole="'Admin'">
+      <div class="nav-section-label">{{ 'NAV.ADMINISTRATION' | translate }}</div>
+
+      <a routerLink="/users" routerLinkActive="active" class="nav-item">
+        <mat-icon>people</mat-icon>
+        <span>{{ 'NAV.USERS' | translate }}</span>
+      </a>
+
+      <a routerLink="/roles" routerLinkActive="active" class="nav-item">
+        <mat-icon>shield</mat-icon>
+        <span>{{ 'NAV.ROLES' | translate }}</span>
+      </a>
+
+      <a routerLink="/settings" routerLinkActive="active" class="nav-item">
+        <mat-icon>settings</mat-icon>
+        <span>{{ 'NAV.SETTINGS' | translate }}</span>
+      </a>
+    </div>
+
+    <!-- Módulos futuros -->
+    <div class="nav-section-label">{{ 'NAV.MODULES' | translate }}</div>
+
+    <div class="nav-item disabled" [matTooltip]="'NAV.COMING_SOON' | translate" matTooltipPosition="right">
+      <mat-icon>timeline</mat-icon>
+      <span>{{ 'NAV.STATES' | translate }}</span>
+      <span class="soon-badge">{{ 'NAV.COMING_SOON' | translate }}</span>
+    </div>
+
+    <div class="nav-item disabled" [matTooltip]="'NAV.COMING_SOON' | translate" matTooltipPosition="right">
+      <mat-icon>table_chart</mat-icon>
+      <span>{{ 'NAV.ABMS' | translate }}</span>
+      <span class="soon-badge">{{ 'NAV.COMING_SOON' | translate }}</span>
+    </div>
+
+    <div class="nav-item disabled" [matTooltip]="'NAV.COMING_SOON' | translate" matTooltipPosition="right">
+      <mat-icon>list</mat-icon>
+      <span>{{ 'NAV.LISTS' | translate }}</span>
+      <span class="soon-badge">{{ 'NAV.COMING_SOON' | translate }}</span>
+    </div>
+  </nav>
+
+  <!-- User section -->
+  <div class="sidebar-footer">
+    <mat-divider class="divider"></mat-divider>
+    <button [matMenuTriggerFor]="userMenu" class="user-btn">
+      <div class="user-avatar">{{ userInitials }}</div>
+      <div class="user-info">
+        <span class="user-name">{{ userFullName }}</span>
+        <span class="user-role">{{ auth.currentUser?.roles?.[0] }}</span>
+      </div>
+      <mat-icon class="chevron">expand_more</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu" xPosition="after">
+      <button mat-menu-item routerLink="/profile">
+        <mat-icon>person</mat-icon> {{ 'NAV.PROFILE' | translate }}
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon> {{ 'NAV.LOGOUT' | translate }}
+      </button>
+    </mat-menu>
+  </div>
+
+</div>

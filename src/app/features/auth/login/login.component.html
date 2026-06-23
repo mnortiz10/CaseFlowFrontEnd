@@ -1,0 +1,92 @@
+<div class="login-page">
+
+  <!-- Left: Brand panel -->
+  <div class="brand-panel">
+    <div class="brand-content">
+      <div class="brand-logo">
+        <svg width="36" height="36" viewBox="0 0 48 48" fill="none">
+          <rect width="48" height="48" rx="12" fill="rgba(99,102,241,.18)"/>
+          <path d="M12 16h8l4 8 4-8h8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 32h8l4-8 4 8h8" stroke="#A5B4FC" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="24" cy="24" r="2.5" fill="#A5B4FC"/>
+        </svg>
+        <span class="brand-name">{{ 'APP.NAME' | translate }}</span>
+      </div>
+
+      <div class="brand-tagline">
+        <h2>{{ 'APP.SUBTITLE' | translate }}</h2>
+        <p>Streamlined workflows, smart case management, and granular access control — all in one platform.</p>
+      </div>
+
+      <ul class="brand-features">
+        <li><span class="feat-dot"></span>Role-based access control</li>
+        <li><span class="feat-dot"></span>Multi-tenant architecture</li>
+        <li><span class="feat-dot"></span>Real-time audit logging</li>
+        <li><span class="feat-dot"></span>Granular permissions</li>
+      </ul>
+    </div>
+
+    <p class="brand-footer">{{ 'AUTH.FOOTER' | translate }}</p>
+  </div>
+
+  <!-- Right: Form panel -->
+  <div class="form-panel">
+    <div class="form-wrap">
+      <div class="form-header">
+        <h1>{{ 'AUTH.SIGN_IN' | translate }}</h1>
+        <p>{{ 'AUTH.ACCESS_ACCOUNT' | translate }}</p>
+      </div>
+
+      @if (error) {
+        <div class="error-banner" role="alert">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ error }}</span>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form" novalidate>
+
+        <div class="cf-field">
+          <label class="cf-label">{{ 'AUTH.EMAIL_OR_USER' | translate }}</label>
+          <div class="cf-input-wrap" [class.cf-error]="form.get('identifier')?.invalid && form.get('identifier')?.touched">
+            <mat-icon class="cf-icon">person_outline</mat-icon>
+            <input class="cf-input" type="text" formControlName="identifier" autocomplete="username">
+          </div>
+          @if (form.get('identifier')?.hasError('required') && form.get('identifier')?.touched) {
+            <span class="cf-hint error">{{ 'AUTH.ERRORS.IDENTIFIER_REQUIRED' | translate }}</span>
+          }
+        </div>
+
+        <div class="cf-field">
+          <label class="cf-label">{{ 'AUTH.PASSWORD' | translate }}</label>
+          <div class="cf-input-wrap" [class.cf-error]="form.get('password')?.invalid && form.get('password')?.touched">
+            <mat-icon class="cf-icon">lock_outline</mat-icon>
+            <input class="cf-input" [type]="hidePassword ? 'password' : 'text'"
+                   formControlName="password" autocomplete="current-password">
+            <button type="button" class="cf-toggle" (click)="hidePassword = !hidePassword">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+            <span class="cf-hint error">{{ 'AUTH.ERRORS.PASSWORD_REQUIRED' | translate }}</span>
+          }
+        </div>
+
+        <div class="form-row-meta">
+          <a href="#" class="forgot-link">{{ 'AUTH.FORGOT_PASSWORD' | translate }}</a>
+        </div>
+
+        <button type="submit" class="login-btn" [disabled]="loading || form.invalid">
+          @if (loading) {
+            <mat-spinner diameter="18" class="spinner-inline"></mat-spinner>
+            {{ 'AUTH.SIGNING_IN' | translate }}
+          } @else {
+            {{ 'AUTH.SIGN_IN_BTN' | translate }}
+          }
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(PW_DIR=\"C:/Users/marti/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/node_modules\" node \"C:/Users/marti/AppData/Local/Temp/ss5.cjs\")",
+      "Bash(export PW_DIR=\"C:/Users/marti/AppData/Local/npm-cache/_npx/e41f203b7505f1fb/node_modules\")",
+      "Bash(node \"C:/Users/marti/AppData/Local/Temp/ss5.cjs\")",
+      "Bash(echo \"exit: $?\")",
+      "Bash(node \"C:/Users/marti/AppData/Local/Temp/ss6.cjs\")",
+      "Bash(node \"C:/Users/marti/AppData/Local/Temp/ss7.cjs\")",
+      "Bash(node \"C:/Users/marti/AppData/Local/Temp/ss8.cjs\")",
+      "Bash(find /c/Users/marti/CaseFlow -name \"*.csproj\" 2>/dev/null | head -10)",
+      "Read(//c/Users/marti/CaseFlow/**)",
+      "Bash(xargs grep -l -i \"login\\\\|LoginRequest\\\\|LoginCommand\")",
+      "Bash(xargs grep -l \"DomainException\\\\|ExceptionMiddleware\\\\|ProblemDetails\\\\|exception\")",
+      "Bash(dotnet build *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4200)",
+      "Bash(node -e \"const p = require\\('playwright'\\); \\(async \\(\\) => { const b = await p.chromium.launch\\(\\); const pg = await b.newPage\\(\\); await pg.goto\\('http://localhost:4200/users', {waitUntil:'networkidle'}\\); await pg.screenshot\\({path: 'C:/Users/marti/CaseFlow/frontend/caseflow-ui/verify_users.png', fullPage: true}\\); await pg.goto\\('http://localhost:4200/roles', {waitUntil:'networkidle'}\\); await pg.screenshot\\({path: 'C:/Users/marti/CaseFlow/frontend/caseflow-ui/verify_roles.png', fullPage: true}\\); await pg.goto\\('http://localhost:4200/settings', {waitUntil:'networkidle'}\\); await pg.screenshot\\({path: 'C:/Users/marti/CaseFlow/frontend/caseflow-ui/verify_settings.png', fullPage: true}\\); await pg.goto\\('http://localhost:4200/profile', {waitUntil:'networkidle'}\\); await pg.screenshot\\({path: 'C:/Users/marti/CaseFlow/frontend/caseflow-ui/verify_profile.png', fullPage: true}\\); await b.close\\(\\); console.log\\('done'\\); }\\)\\(\\)\")",
+      "Bash(npx playwright *)",
+      "PowerShell(Get-Command playwright -ErrorAction SilentlyContinue)",
+      "PowerShell(npx playwright --version 2>&1)",
+      "PowerShell(\\(Get-Command npx\\).Source; npx playwright --version 2>&1; $env:npm_execpath)",
+      "PowerShell(node -e \"console.log\\(require.resolve.paths\\('playwright'\\)\\)\")",
+      "PowerShell(npx playwright screenshot --help 2>&1)",
+      "PowerShell(head -5)",
+      "PowerShell($playwrightPath = \\(npx playwright --version 2>&1\\)[0]; $paths = [System.Environment]::GetEnvironmentVariable\\(\"PATH\"\\) -split \";\"; $paths | ForEach-Object { if \\(Test-Path \"$_\\\\playwright.cmd\"\\) { Write-Host $_ } })",
+      "PowerShell(cd \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\"; dotnet build CaseFlow.API/CaseFlow.API.csproj --output \"$env:TEMP\\\\caseflow-build-check\" 2>&1 | Select-Object -Last 15)",
+      "PowerShell(cd \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\"; dotnet build CaseFlow.API/CaseFlow.API.csproj --output \"$env:TEMP\\\\caseflow-build-check2\" 2>&1 | Select-Object -Last 8)",
+      "PowerShell(dotnet build \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.API\\\\CaseFlow.API.csproj\" --output \"$env:TEMP\\\\cf-build3\" 2>&1 | Select-Object -Last 5)"
+    ]
+  }
+}

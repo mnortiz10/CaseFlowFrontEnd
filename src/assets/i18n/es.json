@@ -1,0 +1,218 @@
+{
+  "APP": {
+    "NAME": "CaseFlow",
+    "SUBTITLE": "Gestión inteligente de casos y flujos de trabajo"
+  },
+  "NAV": {
+    "DASHBOARD": "Dashboard",
+    "USERS": "Usuarios",
+    "ROLES": "Roles y Permisos",
+    "SETTINGS": "Configuración",
+    "PROFILE": "Perfil",
+    "LOGOUT": "Cerrar sesión",
+    "ADMINISTRATION": "Administración",
+    "MODULES": "Módulos",
+    "COMING_SOON": "Pronto",
+    "STATES": "Estados",
+    "ABMS": "ABMs",
+    "LISTS": "Listas"
+  },
+  "HEADER": {
+    "SEARCH_PLACEHOLDER": "Buscar...",
+    "NOTIFICATIONS": "Notificaciones"
+  },
+  "AUTH": {
+    "SIGN_IN": "Iniciar sesión",
+    "ACCESS_ACCOUNT": "Accedé a tu cuenta",
+    "EMAIL_OR_USER": "Email o usuario",
+    "PASSWORD": "Contraseña",
+    "SIGN_IN_BTN": "Ingresar",
+    "SIGNING_IN": "Ingresando...",
+    "FORGOT_PASSWORD": "¿Olvidaste tu contraseña?",
+    "FOOTER": "© 2025 CaseFlow · Todos los derechos reservados",
+    "ERRORS": {
+      "IDENTIFIER_REQUIRED": "El email o usuario es requerido",
+      "PASSWORD_REQUIRED": "La contraseña es requerida",
+      "USER_NOT_FOUND": "El usuario no existe.",
+      "WRONG_PASSWORD": "Contraseña incorrecta.",
+      "GENERIC": "Error al iniciar sesión."
+    }
+  },
+  "DASHBOARD": {
+    "WELCOME": "Bienvenido, {{name}}",
+    "SUBTITLE": "Aquí está el resumen de tu sistema.",
+    "STATS": {
+      "ACTIVE_USERS": "Usuarios activos",
+      "CONFIGURED_ROLES": "Roles configurados",
+      "AVAILABLE_PERMISSIONS": "Permisos disponibles"
+    },
+    "RECENT_USERS": "Últimos usuarios",
+    "VIEW_ALL": "Ver todos",
+    "TABLE": {
+      "NAME": "Nombre",
+      "EMAIL": "Email",
+      "ROLES": "Roles",
+      "STATUS": "Estado",
+      "LAST_LOGIN": "Último acceso"
+    }
+  },
+  "USERS": {
+    "TITLE": "Usuarios",
+    "SUBTITLE": "Gestioná los usuarios de tu organización",
+    "NEW_USER": "Nuevo usuario",
+    "DIALOG": {
+      "CREATE_TITLE": "Nuevo usuario",
+      "EDIT_TITLE": "Editar usuario"
+    },
+    "FIELDS": {
+      "FIRST_NAME": "Nombre",
+      "LAST_NAME": "Apellido",
+      "EMAIL": "Email",
+      "PASSWORD": "Contraseña",
+      "ROLES": "Roles",
+      "ACTIVE": "Activo"
+    },
+    "VALIDATION": {
+      "FIRST_NAME_REQUIRED": "El nombre es requerido",
+      "LAST_NAME_REQUIRED": "El apellido es requerido",
+      "EMAIL_REQUIRED": "El email es requerido",
+      "EMAIL_INVALID": "Ingresá un email válido",
+      "PASSWORD_REQUIRED": "La contraseña es requerida",
+      "PASSWORD_MIN": "Mínimo 8 caracteres",
+      "MIN_2": "Mínimo 2 caracteres"
+    },
+    "FILTER": {
+      "SEARCH": "Buscar",
+      "SEARCH_PLACEHOLDER": "Nombre o email...",
+      "STATUS": "Estado",
+      "ALL": "Todos",
+      "ACTIVE": "Activo",
+      "INACTIVE": "Inactivo"
+    },
+    "TABLE": {
+      "USER": "Usuario",
+      "EMAIL": "Email",
+      "ROLES": "Roles",
+      "STATUS": "Estado",
+      "LAST_LOGIN": "Último acceso",
+      "EMPTY": "No se encontraron usuarios",
+      "NEVER": "Nunca"
+    },
+    "ACTIONS": {
+      "EDIT": "Editar",
+      "ACTIVATE": "Activar",
+      "DEACTIVATE": "Desactivar",
+      "CONFIRM_TOGGLE": "¿{{action}} a {{name}}?"
+    },
+    "CONFIRM_DELETE": {
+      "TITLE": "Eliminar usuario",
+      "MESSAGE": "¿Seguro que querés eliminar a {{name}}? Esta acción no puede deshacerse."
+    },
+    "TOAST": {
+      "CREATED": "Usuario creado correctamente",
+      "UPDATED": "Usuario actualizado correctamente",
+      "DELETED": "Usuario eliminado"
+    }
+  },
+  "ROLES": {
+    "TITLE": "Roles y Permisos",
+    "SUBTITLE": "Gestioná los roles y sus permisos asociados",
+    "NEW_ROLE": "Nuevo rol",
+    "DIALOG": {
+      "CREATE_TITLE": "Nuevo rol",
+      "EDIT_TITLE": "Editar rol"
+    },
+    "FIELDS": {
+      "NAME": "Nombre",
+      "DESCRIPTION": "Descripción",
+      "ACTIVE": "Activo"
+    },
+    "VALIDATION": {
+      "NAME_REQUIRED": "El nombre es requerido",
+      "MIN_2": "Mínimo 2 caracteres",
+      "MAX_100": "Máximo 100 caracteres",
+      "MAX_500": "Máximo 500 caracteres"
+    },
+    "TABLE": {
+      "NAME": "Nombre",
+      "DESCRIPTION": "Descripción",
+      "USERS": "Usuarios",
+      "PERMISSIONS": "Permisos",
+      "STATUS": "Estado",
+      "EMPTY": "No se encontraron roles"
+    },
+    "PERMISSIONS_PANEL": "Permisos — {{name}}",
+    "SAVE_PERMISSIONS": "Guardar permisos",
+    "MANAGE_PERMISSIONS": "Gestionar permisos",
+    "EDIT": "Editar",
+    "CONFIRM_DELETE": {
+      "TITLE": "Eliminar rol",
+      "MESSAGE": "¿Seguro que querés eliminar el rol '{{name}}'?"
+    },
+    "TOAST": {
+      "CREATED": "Rol creado correctamente",
+      "UPDATED": "Rol actualizado correctamente",
+      "DELETED": "Rol eliminado",
+      "SAVED": "Permisos guardados"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "Configuración",
+    "TENANT_DATA": "Datos del tenant",
+    "FIELDS": {
+      "NAME": "Nombre",
+      "SLUG": "Slug",
+      "SLUG_HINT": "El slug no puede modificarse una vez creado"
+    },
+    "SAVE": "Guardar cambios",
+    "COMING_SOON_TITLE": "Más configuraciones próximamente",
+    "COMING_SOON_DESC": "Notificaciones, integraciones, facturación y más.",
+    "TOAST": {
+      "SAVED": "Configuración guardada"
+    }
+  },
+  "PROFILE": {
+    "TITLE": "Mi perfil",
+    "PERSONAL_DATA": "Datos personales",
+    "FIELDS": {
+      "FIRST_NAME": "Nombre",
+      "LAST_NAME": "Apellido",
+      "CURRENT_PASSWORD": "Contraseña actual",
+      "NEW_PASSWORD": "Nueva contraseña",
+      "CONFIRM_PASSWORD": "Confirmar contraseña"
+    },
+    "SAVE": "Guardar",
+    "CHANGE_PASSWORD": "Cambiar contraseña",
+    "CHANGE_PASSWORD_BTN": "Cambiar contraseña",
+    "ROLES_PERMISSIONS": "Roles y permisos asignados",
+    "ASSIGNED_ROLES": "Roles y permisos asignados",
+    "ROLES": "Roles",
+    "PERMISSIONS": "Permisos",
+    "TOAST": {
+      "SAVED": "Perfil actualizado",
+      "PROFILE_SAVED": "Perfil actualizado",
+      "PASSWORD_CHANGED": "Contraseña actualizada"
+    }
+  },
+  "STATUS": {
+    "ACTIVE": "Activo",
+    "INACTIVE": "Inactivo"
+  },
+  "LANGUAGE": {
+    "SELECT": "Idioma",
+    "EN": "Inglés",
+    "ES": "Español"
+  },
+  "COMMON": {
+    "CLOSE": "Cerrar",
+    "SAVE": "Guardar",
+    "SAVING": "Guardando...",
+    "CANCEL": "Cancelar",
+    "CONFIRM": "Confirmar",
+    "EDIT": "Editar",
+    "DELETE": "Eliminar"
+  },
+  "ERRORS": {
+    "UNEXPECTED": "Ocurrió un error inesperado."
+  }
+}

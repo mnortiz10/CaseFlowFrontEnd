@@ -1,0 +1,33 @@
+<header class="app-header">
+  <button mat-icon-button class="menu-btn" (click)="menuToggle.emit()">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <div class="breadcrumb">
+    <span class="tenant-name">{{ tenantName }}</span>
+  </div>
+
+  <div class="header-actions">
+    <div class="search-box">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input type="text" [placeholder]="'HEADER.SEARCH_PLACEHOLDER' | translate" class="search-input">
+      <span class="search-kbd">⌘K</span>
+    </div>
+
+    <mat-select
+      class="lang-select"
+      [value]="langService.currentLang"
+      (selectionChange)="changeLang($event.value)"
+      [aria-label]="'LANGUAGE.SELECT' | translate">
+      @for (lang of langService.supportedLanguages; track lang.code) {
+        <mat-option [value]="lang.code">{{ lang.labelKey | translate }}</mat-option>
+      }
+    </mat-select>
+
+    <button mat-icon-button class="action-btn"
+            [matBadge]="'3'" matBadgeSize="small" matBadgeColor="warn"
+            [matTooltip]="'HEADER.NOTIFICATIONS' | translate">
+      <mat-icon>notifications</mat-icon>
+    </button>
+  </div>
+</header>

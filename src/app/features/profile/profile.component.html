@@ -1,0 +1,106 @@
+<div class="page-container">
+  <div style="margin-bottom:24px">
+    <h2 class="section-title">{{ 'PROFILE.TITLE' | translate }}</h2>
+    <p class="page-subtitle">Manage your personal details and security.</p>
+  </div>
+
+  <div class="profile-layout">
+
+    <!-- Left column -->
+    <div class="profile-left">
+
+      <!-- Identity card -->
+      <div class="profile-card">
+        <div class="profile-identity">
+          <div class="profile-avatar">{{ initials }}</div>
+          <div>
+            <h3 class="identity-name">{{ auth.currentUser?.firstName }} {{ auth.currentUser?.lastName }}</h3>
+            <p class="identity-email">{{ auth.currentUser?.email }}</p>
+            <div class="identity-roles">
+              @for (role of auth.currentUser?.roles; track role) {
+                <span class="role-badge">{{ role }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal data -->
+      <div class="settings-section">
+        <div class="section-meta">
+          <h4 class="section-meta-title">{{ 'PROFILE.PERSONAL_DATA' | translate }}</h4>
+          <p class="section-meta-desc">Your name as it appears in the platform.</p>
+        </div>
+        <form [formGroup]="profileForm" class="section-form">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'PROFILE.FIELDS.FIRST_NAME' | translate }}</mat-label>
+            <input matInput formControlName="firstName">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'PROFILE.FIELDS.LAST_NAME' | translate }}</mat-label>
+            <input matInput formControlName="lastName">
+          </mat-form-field>
+        </form>
+        <div class="section-actions">
+          <button mat-flat-button class="save-btn" (click)="saveProfile()">{{ 'PROFILE.SAVE' | translate }}</button>
+        </div>
+      </div>
+
+      <!-- Change password -->
+      <div class="settings-section">
+        <div class="section-meta">
+          <h4 class="section-meta-title">{{ 'PROFILE.CHANGE_PASSWORD' | translate }}</h4>
+          <p class="section-meta-desc">Use a strong password you don't use elsewhere.</p>
+        </div>
+        <form [formGroup]="passwordForm" class="section-form">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'PROFILE.FIELDS.CURRENT_PASSWORD' | translate }}</mat-label>
+            <input matInput type="password" formControlName="currentPassword">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'PROFILE.FIELDS.NEW_PASSWORD' | translate }}</mat-label>
+            <input matInput type="password" formControlName="newPassword">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'PROFILE.FIELDS.CONFIRM_PASSWORD' | translate }}</mat-label>
+            <input matInput type="password" formControlName="confirmPassword">
+          </mat-form-field>
+        </form>
+        <div class="section-actions">
+          <button mat-flat-button class="save-btn" (click)="changePassword()" [disabled]="passwordForm.invalid">
+            {{ 'PROFILE.CHANGE_PASSWORD_BTN' | translate }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right column: Roles & Permissions -->
+    <div class="profile-right">
+      <div class="perms-card">
+        <h4 class="perms-title">{{ 'PROFILE.ROLES_PERMISSIONS' | translate }}</h4>
+
+        <div class="perms-section">
+          <p class="perms-label">{{ 'PROFILE.ROLES' | translate }}</p>
+          <div class="perms-chips">
+            @for (role of auth.currentUser?.roles; track role) {
+              <span class="role-badge">{{ role }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="perms-divider"></div>
+
+        <div class="perms-section">
+          <p class="perms-label">{{ 'PROFILE.PERMISSIONS' | translate }}</p>
+          <div class="perms-list">
+            @for (perm of auth.currentUser?.permissions; track perm) {
+              <span class="perm-tag">{{ perm }}</span>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

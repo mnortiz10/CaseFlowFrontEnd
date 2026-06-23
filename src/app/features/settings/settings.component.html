@@ -1,0 +1,47 @@
+<div class="page-container">
+  <div style="margin-bottom:20px">
+    <h2 class="section-title">{{ 'SETTINGS.TITLE' | translate }}</h2>
+    <p class="page-subtitle">Manage your workspace preferences.</p>
+  </div>
+
+  <!-- Tenant data section -->
+  <div class="settings-section">
+    <div class="section-meta">
+      <h3 class="section-meta-title">{{ 'SETTINGS.TENANT_DATA' | translate }}</h3>
+      <p class="section-meta-desc">Basic information about your organization on CaseFlow.</p>
+    </div>
+
+    <form [formGroup]="tenantForm" class="section-form">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'SETTINGS.FIELDS.NAME' | translate }}</mat-label>
+        <input matInput formControlName="name">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'SETTINGS.FIELDS.SLUG' | translate }}</mat-label>
+        <input matInput formControlName="slug">
+        <mat-hint>{{ 'SETTINGS.FIELDS.SLUG_HINT' | translate }}</mat-hint>
+      </mat-form-field>
+    </form>
+
+    <div class="section-actions">
+      <button mat-flat-button class="save-btn" (click)="save()">
+        {{ 'SETTINGS.SAVE' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Coming soon -->
+  <mat-card class="coming-card">
+    <mat-card-content>
+      <div class="coming-content">
+        <div class="coming-icon-wrap">
+          <mat-icon>construction</mat-icon>
+        </div>
+        <div class="coming-text">
+          <h3>{{ 'SETTINGS.COMING_SOON_TITLE' | translate }}</h3>
+          <p>{{ 'SETTINGS.COMING_SOON_DESC' | translate }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

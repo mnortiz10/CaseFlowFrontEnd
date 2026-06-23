@@ -1,0 +1,155 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 12px;
+}
+
+.new-btn {
+  background: var(--cf-accent) !important;
+  color: #fff !important;
+  border-radius: var(--cf-radius) !important;
+  font-size: 0.8125rem !important;
+  height: 36px !important;
+  gap: 4px !important;
+
+  mat-icon { font-size: 1rem !important; width: 18px !important; height: 18px !important; }
+
+  &:hover { background: var(--cf-accent-h) !important; }
+}
+
+/* ─── Filters ─────────────────────────────────────────────────────── */
+.filters-card {
+  margin-bottom: 14px;
+  padding: 14px 16px !important;
+
+  mat-card-content { padding: 0 !important; }
+}
+
+.filters-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.filter-field { flex: 1; min-width: 200px; }
+.filter-select { width: 150px; }
+
+/* ─── Table card ──────────────────────────────────────────────────── */
+.table-card { overflow: hidden; }
+.table-card mat-card-content { padding: 0 !important; }
+
+.full-table { width: 100%; }
+
+th.mat-mdc-header-cell {
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  color: var(--cf-text-muted) !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  background: var(--cf-bg) !important;
+  border-bottom: 1px solid var(--cf-border) !important;
+}
+
+td.mat-mdc-cell {
+  font-size: 0.8125rem !important;
+  border-bottom-color: var(--cf-border) !important;
+}
+
+.mat-mdc-row {
+  transition: background var(--cf-t) !important;
+  &:hover { background: var(--cf-bg) !important; }
+}
+
+/* ─── User cell ───────────────────────────────────────────────────── */
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--cf-accent-bg);
+  color: var(--cf-accent-text);
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  letter-spacing: 0;
+}
+
+.user-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--cf-text);
+}
+
+.text-muted { color: var(--cf-text-muted) !important; font-size: 0.8rem !important; }
+
+/* ─── Roles ───────────────────────────────────────────────────────── */
+.roles-cell { display: flex; gap: 4px; flex-wrap: wrap; }
+
+.role-chip {
+  padding: 2px 7px;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--cf-accent-text);
+  background: var(--cf-accent-bg);
+}
+
+/* ─── Actions ─────────────────────────────────────────────────────── */
+.actions-cell {
+  white-space: nowrap;
+  text-align: right;
+  padding-right: 8px !important;
+}
+
+/* ─── Loading / Empty ─────────────────────────────────────────────── */
+.loading-row {
+  display: flex;
+  justify-content: center;
+  padding: 48px;
+}
+
+.skel-rows { padding: 8px 0; }
+
+.skel-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--cf-border);
+
+  &:last-child { border-bottom: none; }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 64px 24px;
+  color: var(--cf-text-subtle);
+  gap: 10px;
+
+  .empty-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--cf-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    mat-icon { font-size: 1.5rem; opacity: .5; }
+  }
+
+  h4 { margin: 0; font-size: 0.875rem; font-weight: 600; color: var(--cf-text-muted); }
+  p  { margin: 0; font-size: 0.8rem; color: var(--cf-text-subtle); }
+}

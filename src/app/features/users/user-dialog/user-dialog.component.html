@@ -1,0 +1,94 @@
+<h2 mat-dialog-title>
+  {{ (isEdit ? 'USERS.DIALOG.EDIT_TITLE' : 'USERS.DIALOG.CREATE_TITLE') | translate }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form">
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'USERS.FIELDS.FIRST_NAME' | translate }}</mat-label>
+        <input matInput formControlName="firstName" autocomplete="given-name">
+        @if (form.get('firstName')?.hasError('required') && form.get('firstName')?.touched) {
+          <mat-error>{{ 'USERS.VALIDATION.FIRST_NAME_REQUIRED' | translate }}</mat-error>
+        }
+        @if (form.get('firstName')?.hasError('minlength') && form.get('firstName')?.touched) {
+          <mat-error>{{ 'USERS.VALIDATION.MIN_2' | translate }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'USERS.FIELDS.LAST_NAME' | translate }}</mat-label>
+        <input matInput formControlName="lastName" autocomplete="family-name">
+        @if (form.get('lastName')?.hasError('required') && form.get('lastName')?.touched) {
+          <mat-error>{{ 'USERS.VALIDATION.LAST_NAME_REQUIRED' | translate }}</mat-error>
+        }
+        @if (form.get('lastName')?.hasError('minlength') && form.get('lastName')?.touched) {
+          <mat-error>{{ 'USERS.VALIDATION.MIN_2' | translate }}</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    @if (!isEdit) {
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'USERS.FIELDS.EMAIL' | translate }}</mat-label>
+        <input matInput formControlName="email" type="email" autocomplete="email">
+        @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+          <mat-error>{{ 'USERS.VALIDATION.EMAIL_REQUIRED' | translate }}</mat-error>
+        }
+        @if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
+          <mat-error>{{ 'USERS.VALIDATION.EMAIL_INVALID' | translate }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'USERS.FIELDS.PASSWORD' | translate }}</mat-label>
+        <input matInput formControlName="password"
+               [type]="hidePassword ? 'password' : 'text'"
+               autocomplete="new-password">
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+          <mat-error>{{ 'USERS.VALIDATION.PASSWORD_REQUIRED' | translate }}</mat-error>
+        }
+        @if (form.get('password')?.hasError('minlength') && form.get('password')?.touched) {
+          <mat-error>{{ 'USERS.VALIDATION.PASSWORD_MIN' | translate }}</mat-error>
+        }
+      </mat-form-field>
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'USERS.FIELDS.ROLES' | translate }}</mat-label>
+      <mat-select formControlName="roles" multiple>
+        @if (loadingRoles) {
+          <mat-option disabled>...</mat-option>
+        }
+        @for (role of availableRoles; track role.id) {
+          <mat-option [value]="role.name">{{ role.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (isEdit) {
+      <div class="status-row">
+        <mat-checkbox formControlName="isActive">
+          {{ 'USERS.FIELDS.ACTIVE' | translate }}
+        </mat-checkbox>
+      </div>
+    }
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false" [disabled]="saving">
+    {{ 'COMMON.CANCEL' | translate }}
+  </button>
+  <button mat-flat-button color="primary" (click)="save()" [disabled]="saving">
+    @if (saving) {
+      <mat-spinner diameter="18" style="display:inline-block; margin-right:6px"></mat-spinner>
+    }
+    {{ 'COMMON.SAVE' | translate }}
+  </button>
+</mat-dialog-actions>

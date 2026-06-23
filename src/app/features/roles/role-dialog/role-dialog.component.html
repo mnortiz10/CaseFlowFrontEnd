@@ -1,0 +1,51 @@
+<h2 mat-dialog-title>
+  {{ (isEdit ? 'ROLES.DIALOG.EDIT_TITLE' : 'ROLES.DIALOG.CREATE_TITLE') | translate }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form">
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'ROLES.FIELDS.NAME' | translate }}</mat-label>
+      <input matInput formControlName="name">
+      @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
+        <mat-error>{{ 'ROLES.VALIDATION.NAME_REQUIRED' | translate }}</mat-error>
+      }
+      @if (form.get('name')?.hasError('minlength') && form.get('name')?.touched) {
+        <mat-error>{{ 'ROLES.VALIDATION.MIN_2' | translate }}</mat-error>
+      }
+      @if (form.get('name')?.hasError('maxlength') && form.get('name')?.touched) {
+        <mat-error>{{ 'ROLES.VALIDATION.MAX_100' | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'ROLES.FIELDS.DESCRIPTION' | translate }}</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+      @if (form.get('description')?.hasError('maxlength') && form.get('description')?.touched) {
+        <mat-error>{{ 'ROLES.VALIDATION.MAX_500' | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    @if (isEdit) {
+      <div class="status-row">
+        <mat-checkbox formControlName="isActive">
+          {{ 'ROLES.FIELDS.ACTIVE' | translate }}
+        </mat-checkbox>
+      </div>
+    }
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false" [disabled]="saving">
+    {{ 'COMMON.CANCEL' | translate }}
+  </button>
+  <button mat-flat-button color="primary" (click)="save()" [disabled]="saving">
+    @if (saving) {
+      <mat-spinner diameter="18" style="display:inline-block; margin-right:6px"></mat-spinner>
+    }
+    {{ 'COMMON.SAVE' | translate }}
+  </button>
+</mat-dialog-actions>

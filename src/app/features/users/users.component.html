@@ -1,0 +1,136 @@
+<div class="page-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h2 class="section-title">{{ 'USERS.TITLE' | translate }}</h2>
+      <p class="page-subtitle">{{ 'USERS.SUBTITLE' | translate }}</p>
+    </div>
+    <button mat-flat-button color="primary" class="new-btn" (click)="openCreate()">
+      <mat-icon>add</mat-icon>{{ 'USERS.NEW_USER' | translate }}
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <mat-card class="filters-card">
+    <form [formGroup]="filterForm" class="filters-form">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>{{ 'USERS.FILTER.SEARCH' | translate }}</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput formControlName="search" [placeholder]="'USERS.FILTER.SEARCH_PLACEHOLDER' | translate">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-select">
+        <mat-label>{{ 'USERS.FILTER.STATUS' | translate }}</mat-label>
+        <mat-select formControlName="isActive">
+          <mat-option [value]="null">{{ 'USERS.FILTER.ALL' | translate }}</mat-option>
+          <mat-option [value]="true">{{ 'USERS.FILTER.ACTIVE' | translate }}</mat-option>
+          <mat-option [value]="false">{{ 'USERS.FILTER.INACTIVE' | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </mat-card>
+
+  <!-- Table card -->
+  <mat-card class="table-card">
+    <mat-card-content>
+
+      <!-- Skeleton rows -->
+      @if (loading) {
+        <div class="skel-rows">
+          @for (i of [1,2,3,4,5,6]; track i) {
+            <div class="skel-row">
+              <span class="skeleton" style="width:32px;height:32px;border-radius:8px;flex-shrink:0"></span>
+              <div style="flex:1;display:flex;flex-direction:column;gap:5px">
+                <span class="skeleton" style="width:140px;height:13px"></span>
+                <span class="skeleton" style="width:200px;height:12px"></span>
+              </div>
+              <span class="skeleton" style="width:60px;height:12px"></span>
+              <span class="skeleton" style="width:56px;height:20px;border-radius:99px"></span>
+              <span class="skeleton" style="width:70px;height:12px"></span>
+            </div>
+          }
+        </div>
+      } @else if (users.length === 0) {
+
+        <!-- Empty state -->
+        <div class="empty-state">
+          <div class="empty-icon"><mat-icon>person_search</mat-icon></div>
+          <h4>{{ 'USERS.TABLE.EMPTY' | translate }}</h4>
+          <p>Create your first user to get started.</p>
+        </div>
+
+      } @else {
+
+        <table mat-table [dataSource]="users" class="full-table">
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>{{ 'USERS.TABLE.USER' | translate }}</th>
+            <td mat-cell *matCellDef="let u">
+              <div class="user-cell">
+                <div class="avatar">{{ u.firstName[0] }}{{ u.lastName[0] }}</div>
+                <span class="user-name">{{ u.firstName }} {{ u.lastName }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>{{ 'USERS.TABLE.EMAIL' | translate }}</th>
+            <td mat-cell *matCellDef="let u" class="text-muted">{{ u.email }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="roles">
+            <th mat-header-cell *matHeaderCellDef>{{ 'USERS.TABLE.ROLES' | translate }}</th>
+            <td mat-cell *matCellDef="let u">
+              <div class="roles-cell">
+                @for (role of u.roles; track role) {
+                  <span class="role-chip">{{ role }}</span>
+                }
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>{{ 'USERS.TABLE.STATUS' | translate }}</th>
+            <td mat-cell *matCellDef="let u">
+              <span [class]="'badge ' + (u.isActive ? 'chip-active' : 'chip-inactive')">
+                {{ (u.isActive ? 'STATUS.ACTIVE' : 'STATUS.INACTIVE') | translate }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="lastLogin">
+            <th mat-header-cell *matHeaderCellDef>{{ 'USERS.TABLE.LAST_LOGIN' | translate }}</th>
+            <td mat-cell *matCellDef="let u" class="text-muted">
+              {{ u.lastLoginAt ? (u.lastLoginAt | date:'dd MMM, HH:mm') : ('USERS.TABLE.NEVER' | translate) }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let u" class="actions-cell">
+              <button mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="openEdit(u, $event)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button [matTooltip]="'COMMON.DELETE' | translate" color="warn" (click)="confirmDelete(u, $event)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator
+          [length]="totalCount"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="[5, 10, 25]"
+          (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
+      }
+
+    </mat-card-content>
+  </mat-card>
+</div>

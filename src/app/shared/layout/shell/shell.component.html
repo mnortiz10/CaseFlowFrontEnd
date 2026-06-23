@@ -1,0 +1,17 @@
+<mat-sidenav-container class="shell-container">
+
+  <mat-sidenav #sidenav
+    [mode]="(isHandset$ | async)?.matches ? 'over' : 'side'"
+    [opened]="!(isHandset$ | async)?.matches"
+    class="shell-sidenav">
+    <app-sidebar (toggleSidenav)="sidenav.toggle()"></app-sidebar>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="shell-content">
+    <app-header (menuToggle)="sidenav.toggle()"></app-header>
+    <main class="main-area">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

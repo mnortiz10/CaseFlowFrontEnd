@@ -1,0 +1,218 @@
+{
+  "APP": {
+    "NAME": "CaseFlow",
+    "SUBTITLE": "Intelligent case and workflow management"
+  },
+  "NAV": {
+    "DASHBOARD": "Dashboard",
+    "USERS": "Users",
+    "ROLES": "Roles & Permissions",
+    "SETTINGS": "Settings",
+    "PROFILE": "Profile",
+    "LOGOUT": "Sign out",
+    "ADMINISTRATION": "Administration",
+    "MODULES": "Modules",
+    "COMING_SOON": "Soon",
+    "STATES": "States",
+    "ABMS": "ABMs",
+    "LISTS": "Lists"
+  },
+  "HEADER": {
+    "SEARCH_PLACEHOLDER": "Search...",
+    "NOTIFICATIONS": "Notifications"
+  },
+  "AUTH": {
+    "SIGN_IN": "Sign in",
+    "ACCESS_ACCOUNT": "Access your account",
+    "EMAIL_OR_USER": "Email or username",
+    "PASSWORD": "Password",
+    "SIGN_IN_BTN": "Sign in",
+    "SIGNING_IN": "Signing in...",
+    "FORGOT_PASSWORD": "Forgot your password?",
+    "FOOTER": "© 2025 CaseFlow · All rights reserved",
+    "ERRORS": {
+      "IDENTIFIER_REQUIRED": "Email or username is required",
+      "PASSWORD_REQUIRED": "Password is required",
+      "USER_NOT_FOUND": "User does not exist.",
+      "WRONG_PASSWORD": "Incorrect password.",
+      "GENERIC": "Error signing in."
+    }
+  },
+  "DASHBOARD": {
+    "WELCOME": "Welcome, {{name}}",
+    "SUBTITLE": "Here is your system summary.",
+    "STATS": {
+      "ACTIVE_USERS": "Active users",
+      "CONFIGURED_ROLES": "Configured roles",
+      "AVAILABLE_PERMISSIONS": "Available permissions"
+    },
+    "RECENT_USERS": "Recent users",
+    "VIEW_ALL": "View all",
+    "TABLE": {
+      "NAME": "Name",
+      "EMAIL": "Email",
+      "ROLES": "Roles",
+      "STATUS": "Status",
+      "LAST_LOGIN": "Last login"
+    }
+  },
+  "USERS": {
+    "TITLE": "Users",
+    "SUBTITLE": "Manage your organization's users",
+    "NEW_USER": "New user",
+    "DIALOG": {
+      "CREATE_TITLE": "New user",
+      "EDIT_TITLE": "Edit user"
+    },
+    "FIELDS": {
+      "FIRST_NAME": "First name",
+      "LAST_NAME": "Last name",
+      "EMAIL": "Email",
+      "PASSWORD": "Password",
+      "ROLES": "Roles",
+      "ACTIVE": "Active"
+    },
+    "VALIDATION": {
+      "FIRST_NAME_REQUIRED": "First name is required",
+      "LAST_NAME_REQUIRED": "Last name is required",
+      "EMAIL_REQUIRED": "Email is required",
+      "EMAIL_INVALID": "Enter a valid email address",
+      "PASSWORD_REQUIRED": "Password is required",
+      "PASSWORD_MIN": "Minimum 8 characters",
+      "MIN_2": "Minimum 2 characters"
+    },
+    "FILTER": {
+      "SEARCH": "Search",
+      "SEARCH_PLACEHOLDER": "Name or email...",
+      "STATUS": "Status",
+      "ALL": "All",
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "TABLE": {
+      "USER": "User",
+      "EMAIL": "Email",
+      "ROLES": "Roles",
+      "STATUS": "Status",
+      "LAST_LOGIN": "Last access",
+      "EMPTY": "No users found",
+      "NEVER": "Never"
+    },
+    "ACTIONS": {
+      "EDIT": "Edit",
+      "ACTIVATE": "Activate",
+      "DEACTIVATE": "Deactivate",
+      "CONFIRM_TOGGLE": "{{action}} {{name}}?"
+    },
+    "CONFIRM_DELETE": {
+      "TITLE": "Delete user",
+      "MESSAGE": "Are you sure you want to delete {{name}}? This action cannot be undone."
+    },
+    "TOAST": {
+      "CREATED": "User created successfully",
+      "UPDATED": "User updated successfully",
+      "DELETED": "User deleted"
+    }
+  },
+  "ROLES": {
+    "TITLE": "Roles & Permissions",
+    "SUBTITLE": "Manage roles and their associated permissions",
+    "NEW_ROLE": "New role",
+    "DIALOG": {
+      "CREATE_TITLE": "New role",
+      "EDIT_TITLE": "Edit role"
+    },
+    "FIELDS": {
+      "NAME": "Name",
+      "DESCRIPTION": "Description",
+      "ACTIVE": "Active"
+    },
+    "VALIDATION": {
+      "NAME_REQUIRED": "Name is required",
+      "MIN_2": "Minimum 2 characters",
+      "MAX_100": "Maximum 100 characters",
+      "MAX_500": "Maximum 500 characters"
+    },
+    "TABLE": {
+      "NAME": "Name",
+      "DESCRIPTION": "Description",
+      "USERS": "Users",
+      "PERMISSIONS": "Permissions",
+      "STATUS": "Status",
+      "EMPTY": "No roles found"
+    },
+    "PERMISSIONS_PANEL": "Permissions — {{name}}",
+    "SAVE_PERMISSIONS": "Save permissions",
+    "MANAGE_PERMISSIONS": "Manage permissions",
+    "EDIT": "Edit",
+    "CONFIRM_DELETE": {
+      "TITLE": "Delete role",
+      "MESSAGE": "Are you sure you want to delete the '{{name}}' role?"
+    },
+    "TOAST": {
+      "CREATED": "Role created successfully",
+      "UPDATED": "Role updated successfully",
+      "DELETED": "Role deleted",
+      "SAVED": "Permissions saved"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "Settings",
+    "TENANT_DATA": "Tenant data",
+    "FIELDS": {
+      "NAME": "Name",
+      "SLUG": "Slug",
+      "SLUG_HINT": "The slug cannot be changed once created"
+    },
+    "SAVE": "Save changes",
+    "COMING_SOON_TITLE": "More settings coming soon",
+    "COMING_SOON_DESC": "Notifications, integrations, billing and more.",
+    "TOAST": {
+      "SAVED": "Settings saved"
+    }
+  },
+  "PROFILE": {
+    "TITLE": "My profile",
+    "PERSONAL_DATA": "Personal data",
+    "FIELDS": {
+      "FIRST_NAME": "First name",
+      "LAST_NAME": "Last name",
+      "CURRENT_PASSWORD": "Current password",
+      "NEW_PASSWORD": "New password",
+      "CONFIRM_PASSWORD": "Confirm password"
+    },
+    "SAVE": "Save",
+    "CHANGE_PASSWORD": "Change password",
+    "CHANGE_PASSWORD_BTN": "Change password",
+    "ROLES_PERMISSIONS": "Assigned roles & permissions",
+    "ASSIGNED_ROLES": "Assigned roles & permissions",
+    "ROLES": "Roles",
+    "PERMISSIONS": "Permissions",
+    "TOAST": {
+      "SAVED": "Profile updated",
+      "PROFILE_SAVED": "Profile updated",
+      "PASSWORD_CHANGED": "Password changed"
+    }
+  },
+  "STATUS": {
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive"
+  },
+  "LANGUAGE": {
+    "SELECT": "Language",
+    "EN": "English",
+    "ES": "Spanish"
+  },
+  "COMMON": {
+    "CLOSE": "Close",
+    "SAVE": "Save",
+    "SAVING": "Saving...",
+    "CANCEL": "Cancel",
+    "CONFIRM": "Confirm",
+    "EDIT": "Edit",
+    "DELETE": "Delete"
+  },
+  "ERRORS": {
+    "UNEXPECTED": "An unexpected error occurred."
+  }
+}

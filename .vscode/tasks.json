@@ -1,0 +1,151 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "npm install",
+			"type": "shell",
+			"command": "npm install",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "build app",
+			"type": "shell",
+			"command": "npm run build",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "check node runtime",
+			"type": "shell",
+			"command": "node -v && npm -v && npx -y node@20 -p \"process.version\"",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "check node runtime",
+			"type": "shell",
+			"command": "node -v; npm -v; npx -y node@20 -p \"process.version\"",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "inspect node setup",
+			"type": "shell",
+			"command": "node -v; npm -v; where.exe node; where.exe npm",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "inspect package managers",
+			"type": "shell",
+			"command": "nvm list; if (Get-Command winget -ErrorAction SilentlyContinue) { winget --version } else { echo 'winget not found' }; if (Get-Command choco -ErrorAction SilentlyContinue) { choco --version } else { echo 'choco not found' }",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "install node lts",
+			"type": "shell",
+			"command": "winget install --id OpenJS.NodeJS.LTS --source winget -e --accept-source-agreements --accept-package-agreements",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "verify runtime",
+			"type": "shell",
+			"command": "node -v; npm -v; where.exe node; where.exe npm",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "build app",
+			"type": "shell",
+			"command": "npm.cmd run build",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "build app via npm.cmd",
+			"type": "shell",
+			"command": "& \"$env:ProgramFiles\\nodejs\\npm.cmd\" run build",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "inspect modules",
+			"type": "shell",
+			"command": "if (Test-Path node_modules/@angular) { Get-ChildItem node_modules/@angular | Select-Object FullName } else { echo 'node_modules/@angular missing' }; if (Test-Path node_modules/@angular/material) { echo 'material exists' } else { echo 'material missing' }; if (Test-Path node_modules) { echo 'node_modules exists' }",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "check material subpaths",
+			"type": "shell",
+			"command": "Get-ChildItem node_modules/@angular/material | Select-Object FullName | Out-String; if (Test-Path 'node_modules/@angular/material/checkbox') { echo 'checkbox path exists' } else { echo 'checkbox path missing' }; if (Test-Path 'node_modules/@angular/material/checkbox/checkbox.d.ts') { echo 'checkbox d.ts exists' } else { echo 'checkbox d.ts missing' }",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "build app after config fix",
+			"type": "shell",
+			"command": "& \"$env:ProgramFiles\\nodejs\\npm.cmd\" run build",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "build app after style fix",
+			"type": "shell",
+			"command": "& \"$env:ProgramFiles\\nodejs\\npm.cmd\" run build",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "start angular dev server",
+			"type": "shell",
+			"command": "& \"$env:ProgramFiles\\nodejs\\npm.cmd\" start",
+			"args": [],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "start angular dev server",
+			"type": "shell",
+			"command": "& \"$env:ProgramFiles\\nodejs\\npm.cmd\" start",
+			"args": [],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}

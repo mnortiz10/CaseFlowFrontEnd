@@ -1,0 +1,170 @@
+.profile-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: start;
+
+  @media (min-width: 900px) {
+    grid-template-columns: 1fr 280px;
+  }
+}
+
+.profile-left { display: flex; flex-direction: column; gap: 16px; }
+
+/* ─── Identity card ───────────────────────────────────────────────── */
+.profile-card {
+  background: var(--cf-surface);
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-md);
+  padding: 20px 24px;
+}
+
+.profile-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: var(--cf-accent);
+  color: #fff;
+  font-size: 1.125rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  letter-spacing: -0.5px;
+}
+
+.identity-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--cf-text);
+  margin: 0 0 3px;
+  letter-spacing: -0.2px;
+}
+
+.identity-email {
+  font-size: 0.8rem;
+  color: var(--cf-text-muted);
+  margin: 0 0 8px;
+}
+
+.identity-roles { display: flex; gap: 4px; flex-wrap: wrap; }
+
+/* ─── Settings section (shared with settings page) ────────────────── */
+.settings-section {
+  background: var(--cf-surface);
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-md);
+  overflow: hidden;
+}
+
+.section-meta {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--cf-border);
+  background: var(--cf-bg);
+}
+
+.section-meta-title {
+  font-size: 0.8375rem;
+  font-weight: 600;
+  color: var(--cf-text);
+  margin: 0 0 3px;
+}
+
+.section-meta-desc {
+  font-size: 0.775rem;
+  color: var(--cf-text-muted);
+  margin: 0;
+}
+
+.section-form {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  mat-form-field { width: 100%; }
+}
+
+.section-actions {
+  padding: 12px 20px;
+  border-top: 1px solid var(--cf-border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.save-btn {
+  background: var(--cf-accent) !important;
+  color: #fff !important;
+  border-radius: var(--cf-radius) !important;
+  font-size: 0.8125rem !important;
+  height: 36px !important;
+  &:hover { background: var(--cf-accent-h) !important; }
+}
+
+/* ─── Role badge ──────────────────────────────────────────────────── */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  background: var(--cf-accent-bg);
+  color: var(--cf-accent-text);
+}
+
+/* ─── Permissions card ────────────────────────────────────────────── */
+.perms-card {
+  background: var(--cf-surface);
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-md);
+  overflow: hidden;
+}
+
+.perms-title {
+  font-size: 0.8375rem;
+  font-weight: 600;
+  color: var(--cf-text);
+  margin: 0;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--cf-border);
+  background: var(--cf-bg);
+}
+
+.perms-section { padding: 16px 18px; }
+
+.perms-divider {
+  height: 1px;
+  background: var(--cf-border);
+}
+
+.perms-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--cf-text-subtle);
+  margin: 0 0 10px;
+}
+
+.perms-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.perms-list { display: flex; flex-wrap: wrap; gap: 5px; }
+
+.perm-tag {
+  font-size: 0.7rem;
+  font-weight: 500;
+  background: var(--cf-bg);
+  color: var(--cf-text-muted);
+  padding: 3px 8px;
+  border-radius: 99px;
+  border: 1px solid var(--cf-border);
+  font-family: 'SF Mono', monospace;
+}

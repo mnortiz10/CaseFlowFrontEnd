@@ -1,0 +1,107 @@
+.app-header {
+  height: 52px;
+  background: var(--cf-surface);
+  border-bottom: 1px solid var(--cf-border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.menu-btn {
+  color: var(--cf-text-muted);
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+}
+
+.breadcrumb { flex: 1; }
+
+.tenant-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--cf-text);
+}
+
+/* ─── Actions ───────────────────────────────────────────────────────── */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ─── Search ────────────────────────────────────────────────────────── */
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--cf-bg);
+  border: 1px solid var(--cf-border);
+  border-radius: 7px;
+  padding: 5px 10px;
+  min-width: 200px;
+  transition: border-color var(--cf-t), box-shadow var(--cf-t), background var(--cf-t);
+
+  &:focus-within {
+    border-color: var(--cf-accent);
+    background: var(--cf-surface);
+    box-shadow: 0 0 0 3px var(--cf-accent-bg);
+  }
+
+  .search-icon {
+    font-size: 0.9rem;
+    width: 16px;
+    height: 16px;
+    color: var(--cf-text-subtle);
+    flex-shrink: 0;
+  }
+
+  .search-input {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 0.8rem;
+    color: var(--cf-text);
+    width: 100%;
+    font-family: inherit;
+
+    &::placeholder { color: var(--cf-text-subtle); }
+  }
+
+  .search-kbd {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.6rem;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--cf-surface);
+    color: var(--cf-text-muted);
+    border: 1px solid var(--cf-border);
+    font-family: 'SF Mono', monospace;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}
+
+/* ─── Language selector ─────────────────────────────────────────────── */
+.lang-select {
+  font-size: 0.78rem;
+  width: 80px;
+  color: var(--cf-text);
+}
+
+/* ─── Notification button ───────────────────────────────────────────── */
+.action-btn {
+  color: var(--cf-text-muted);
+  width: 34px !important;
+  height: 34px !important;
+  line-height: 34px !important;
+  border-radius: 7px !important;
+  transition: background var(--cf-t) !important;
+
+  &:hover { background: var(--cf-bg) !important; }
+}

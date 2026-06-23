@@ -1,0 +1,110 @@
+<div class="page-container">
+
+  <!-- Welcome header -->
+  <div class="dash-header">
+    <div>
+      <h1 class="dash-greeting">{{ 'DASHBOARD.WELCOME' | translate:{ name: firstName } }}</h1>
+      <p class="dash-sub">{{ 'DASHBOARD.SUBTITLE' | translate }}</p>
+    </div>
+    <a routerLink="/users" class="dash-cta" *ngIf="!loading">
+      <mat-icon>add</mat-icon>
+      {{ 'USERS.NEW_USER' | translate }}
+    </a>
+  </div>
+
+  <!-- Stats row -->
+  <div class="stats-row">
+
+    @if (loading) {
+      @for (i of [1,2,3]; track i) {
+        <div class="stat-card skeleton-card">
+          <span class="skeleton" style="width:36px;height:36px;border-radius:8px"></span>
+          <div class="stat-body">
+            <span class="skeleton" style="width:52px;height:28px"></span>
+            <span class="skeleton" style="width:96px;height:13px;margin-top:4px"></span>
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="stat-card">
+        <div class="stat-icon-wrap users">
+          <mat-icon>person</mat-icon>
+        </div>
+        <div class="stat-body">
+          <span class="stat-value">{{ stats.users }}</span>
+          <span class="stat-label">{{ 'DASHBOARD.STATS.ACTIVE_USERS' | translate }}</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap roles">
+          <mat-icon>shield</mat-icon>
+        </div>
+        <div class="stat-body">
+          <span class="stat-value">{{ stats.roles }}</span>
+          <span class="stat-label">{{ 'DASHBOARD.STATS.CONFIGURED_ROLES' | translate }}</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrap perms">
+          <mat-icon>key</mat-icon>
+        </div>
+        <div class="stat-body">
+          <span class="stat-value">{{ stats.permissions }}</span>
+          <span class="stat-label">{{ 'DASHBOARD.STATS.AVAILABLE_PERMISSIONS' | translate }}</span>
+        </div>
+      </div>
+    }
+
+  </div>
+
+  <!-- Recent users -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <h3>{{ 'DASHBOARD.RECENT_USERS' | translate }}</h3>
+      <a routerLink="/users" class="view-all">{{ 'DASHBOARD.VIEW_ALL' | translate }} →</a>
+    </div>
+
+    @if (loading) {
+      <div class="user-list">
+        @for (i of [1,2,3,4,5]; track i) {
+          <div class="user-row">
+            <span class="skeleton" style="width:34px;height:34px;border-radius:8px;flex-shrink:0"></span>
+            <div class="skeleton-lines">
+              <span class="skeleton" style="width:140px;height:13px"></span>
+              <span class="skeleton" style="width:200px;height:12px;margin-top:5px"></span>
+            </div>
+            <span class="skeleton" style="width:60px;height:20px;border-radius:99px;margin-left:auto"></span>
+          </div>
+        }
+      </div>
+    } @else if (recentUsers.length === 0) {
+      <div class="empty-state">
+        <mat-icon>people_outline</mat-icon>
+        <p>No users yet</p>
+      </div>
+    } @else {
+      <div class="user-list">
+        @for (u of recentUsers; track u.id) {
+          <div class="user-row">
+            <div class="user-avatar">{{ u.firstName[0] }}{{ u.lastName[0] }}</div>
+            <div class="user-meta">
+              <span class="user-name">{{ u.firstName }} {{ u.lastName }}</span>
+              <span class="user-email">{{ u.email }}</span>
+            </div>
+            <div class="user-roles">
+              @for (role of u.roles.slice(0,2); track role) {
+                <span class="role-tag">{{ role }}</span>
+              }
+            </div>
+            <span [class]="'badge ' + (u.isActive ? 'chip-active' : 'chip-inactive')">
+              {{ (u.isActive ? 'STATUS.ACTIVE' : 'STATUS.INACTIVE') | translate }}
+            </span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+</div>

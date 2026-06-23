@@ -1,0 +1,98 @@
+.settings-section {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 0;
+  max-width: 760px;
+  background: var(--cf-surface);
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-md);
+  margin-bottom: 16px;
+  overflow: hidden;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.section-meta {
+  padding: 24px 24px;
+  border-right: 1px solid var(--cf-border);
+  background: var(--cf-bg);
+
+  @media (max-width: 640px) {
+    border-right: none;
+    border-bottom: 1px solid var(--cf-border);
+  }
+}
+
+.section-meta-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cf-text);
+  margin: 0 0 6px;
+}
+
+.section-meta-desc {
+  font-size: 0.775rem;
+  color: var(--cf-text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.section-form {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  mat-form-field { width: 100%; }
+}
+
+.section-actions {
+  padding: 16px 24px;
+  border-top: 1px solid var(--cf-border);
+  display: flex;
+  justify-content: flex-end;
+  grid-column: 1 / -1;
+}
+
+.save-btn {
+  background: var(--cf-accent) !important;
+  color: #fff !important;
+  border-radius: var(--cf-radius) !important;
+  font-size: 0.8125rem !important;
+  height: 36px !important;
+  &:hover { background: var(--cf-accent-h) !important; }
+}
+
+/* ─── Coming soon card ─────────────────────────────────────────────── */
+.coming-card {
+  max-width: 760px;
+  border: 1.5px dashed var(--cf-border) !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.coming-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+}
+
+.coming-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--cf-bg);
+  border: 1px solid var(--cf-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon { color: var(--cf-text-subtle); font-size: 1.25rem; }
+}
+
+.coming-text h3 { margin: 0 0 4px; font-size: 0.875rem; font-weight: 600; color: var(--cf-text); }
+.coming-text p  { margin: 0; font-size: 0.8rem; color: var(--cf-text-muted); }
