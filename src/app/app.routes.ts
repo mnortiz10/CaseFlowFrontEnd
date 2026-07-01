@@ -15,7 +15,13 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./features/tickets/ticket-dashboard/ticket-dashboard.component').then(m => m.TicketDashboardComponent)
+      },
+      {
+        path: 'overview',
+        loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
+        canActivate: [roleGuard],
+        data: { role: 'Admin' }
       },
       {
         path: 'users',

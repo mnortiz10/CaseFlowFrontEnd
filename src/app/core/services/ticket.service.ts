@@ -20,6 +20,7 @@ export interface TicketListItemDto {
   subState: TicketSubState;
   stateEnteredAt: string;
   assignedToName: string | null;
+  createdByName: string;
   createdAt: string;
 }
 

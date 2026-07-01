@@ -11,6 +11,7 @@
     "PROFILE": "Perfil",
     "LOGOUT": "Cerrar sesión",
     "ADMINISTRATION": "Administración",
+    "OVERVIEW": "Resumen",
     "TICKET_MANAGEMENT": "Gestión de Tickets",
     "TICKETS": "Tickets",
     "TICKET_TYPES": "Tipos de Ticket",
@@ -54,6 +55,20 @@
       "STATUS": "Estado",
       "LAST_LOGIN": "Último acceso"
     }
+  },
+  "TICKET_DASHBOARD": {
+    "WELCOME": "Bienvenido, {{name}}",
+    "SUBTITLE": "Así está la operación de tickets hoy.",
+    "GO_TO_TICKETS": "Ir a Tickets",
+    "STATS": {
+      "ON_TIME": "A tiempo",
+      "DUE_SOON": "Por vencer",
+      "OVERDUE": "Vencidos"
+    },
+    "RECENT_TICKETS": "Últimos tickets creados",
+    "VIEW_ALL": "Ver todos",
+    "CREATED_BY": "Creado por",
+    "EMPTY": "Todavía no hay tickets"
   },
   "USERS": {
     "TITLE": "Usuarios",

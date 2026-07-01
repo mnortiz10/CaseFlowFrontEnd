@@ -32,7 +32,15 @@
       "PowerShell(dotnet build \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.Application\\\\CaseFlow.Application.csproj\" -q 2>&1)",
       "PowerShell(dotnet build \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.Application\\\\CaseFlow.Application.csproj\" 2>&1 | Where-Object { $_ -match \"error CS\" } | Select-Object -First 5)",
       "PowerShell(Set-Location \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\frontend\\\\caseflow-ui\"; npx ng build --configuration=development 2>&1 | Where-Object { $_ -match \"\\(?i\\)\\\\berror\\\\b\" } | Select-Object -First 10)",
-      "PowerShell(Stop-Process -Id 16392 -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500; cd \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.API\"; dotnet build --no-restore 2>&1 | Where-Object { $_ -match \"error|warning CS|Build succeeded|Error\\\\\\(s\\\\\\)\" } | Select-Object -Last 10)"
+      "PowerShell(Stop-Process -Id 16392 -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500; cd \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.API\"; dotnet build --no-restore 2>&1 | Where-Object { $_ -match \"error|warning CS|Build succeeded|Error\\\\\\(s\\\\\\)\" } | Select-Object -Last 10)",
+      "Bash(cd \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\" && grep -n \"CreatedBy\" CaseFlow.Domain/Entities/Ticket.cs CaseFlow.Infrastructure/Repositories/TicketRepository.cs)",
+      "Read(//c/Users/marti/CaseFlow/backend/**)",
+      "Bash(curl -s http://localhost:4200/main.js -o /tmp/main.js)",
+      "Read(//tmp/**)",
+      "Bash(curl -s \"http://localhost:4200/src/app/shared/layout/sidebar/sidebar.component.html?raw\")",
+      "Bash(curl -s \"http://localhost:4200/src/app/shared/layout/sidebar/sidebar.component.ts\")",
+      "Bash(powershell -Command \"Get-Process -Id 5536 | Select-Object Id,ProcessName,Path,StartTime\")",
+      "Bash(powershell -Command \"Get-CimInstance Win32_Process -Filter 'ProcessId=5536' | Select-Object CommandLine\")"
     ]
   }
 }

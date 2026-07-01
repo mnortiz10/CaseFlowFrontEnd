@@ -11,6 +11,11 @@
     "PROFILE": "Profile",
     "LOGOUT": "Sign out",
     "ADMINISTRATION": "Administration",
+    "OVERVIEW": "Overview",
+    "TICKET_MANAGEMENT": "Ticket Management",
+    "TICKETS": "Tickets",
+    "TICKET_TYPES": "Ticket Types",
+    "WORKFLOWS": "Workflows",
     "MODULES": "Modules",
     "COMING_SOON": "Soon",
     "STATES": "States",
@@ -55,6 +60,20 @@
       "STATUS": "Status",
       "LAST_LOGIN": "Last login"
     }
+  },
+  "TICKET_DASHBOARD": {
+    "WELCOME": "Welcome, {{name}}",
+    "SUBTITLE": "Here is how ticket operations look today.",
+    "GO_TO_TICKETS": "Go to Tickets",
+    "STATS": {
+      "ON_TIME": "On time",
+      "DUE_SOON": "Due soon",
+      "OVERDUE": "Overdue"
+    },
+    "RECENT_TICKETS": "Recently created tickets",
+    "VIEW_ALL": "View all",
+    "CREATED_BY": "Created by",
+    "EMPTY": "No tickets yet"
   },
   "USERS": {
     "TITLE": "Users",

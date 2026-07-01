@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -41,6 +41,7 @@ export class TicketsComponent implements OnInit {
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly fb = inject(FormBuilder);
 
   displayedColumns = ['subState','ticketNumber','title','ticketType','currentState','timeInState','assignedTo'];
@@ -70,6 +71,12 @@ export class TicketsComponent implements OnInit {
 
   ngOnInit(): void {
     this.ticketTypeService.getAll().subscribe({ next: tt => this.ticketTypes = tt });
+
+    const subStateParam = this.route.snapshot.queryParamMap.get('subState');
+    if (subStateParam != null && subStateParam !== '') {
+      this.filterForm.get('subState')!.setValue(Number(subStateParam), { emitEvent: false });
+    }
+
     this.load();
 
     // Text inputs — real-time debounced

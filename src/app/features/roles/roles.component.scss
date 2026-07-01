@@ -38,7 +38,8 @@
 }
 
 /* ─── Table ───────────────────────────────────────────────────────── */
-.full-table { width: 100%; }
+.table-scroll { overflow-x: auto; }
+.full-table { width: 100%; min-width: 560px; }
 
 th.mat-mdc-header-cell {
   font-size: 0.72rem !important;
@@ -91,6 +92,8 @@ td.mat-mdc-cell {
   .mat-column-permissions {
     display: none !important;
   }
+
+  .full-table { min-width: 0; }
 
   .page-header {
     flex-direction: column;

@@ -1,0 +1,108 @@
+<div class="page-container">
+
+  <!-- Welcome header -->
+  <div class="dash-header">
+    <div>
+      <h1 class="dash-greeting">{{ 'TICKET_DASHBOARD.WELCOME' | translate:{ name: firstName } }}</h1>
+      <p class="dash-sub">{{ 'TICKET_DASHBOARD.SUBTITLE' | translate }}</p>
+    </div>
+    <a routerLink="/tickets" class="dash-cta">
+      <mat-icon>confirmation_number</mat-icon>
+      {{ 'TICKET_DASHBOARD.GO_TO_TICKETS' | translate }}
+    </a>
+  </div>
+
+  <!-- Stats row -->
+  <div class="stats-row">
+
+    @if (loading) {
+      @for (i of [1,2,3]; track i) {
+        <div class="stat-card skeleton-card">
+          <span class="skeleton" style="width:36px;height:36px;border-radius:8px"></span>
+          <div class="stat-body">
+            <span class="skeleton" style="width:52px;height:28px"></span>
+            <span class="skeleton" style="width:96px;height:13px;margin-top:4px"></span>
+          </div>
+        </div>
+      }
+    } @else {
+      <a class="stat-card stat-card-link" routerLink="/tickets" [queryParams]="{ subState: TicketSubState.Green }">
+        <div class="stat-icon-wrap on-time">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="stat-body">
+          <span class="stat-value">{{ stats.onTime }}</span>
+          <span class="stat-label">{{ 'TICKET_DASHBOARD.STATS.ON_TIME' | translate }}</span>
+        </div>
+      </a>
+
+      <a class="stat-card stat-card-link" routerLink="/tickets" [queryParams]="{ subState: TicketSubState.Yellow }">
+        <div class="stat-icon-wrap due-soon">
+          <mat-icon>schedule</mat-icon>
+        </div>
+        <div class="stat-body">
+          <span class="stat-value">{{ stats.dueSoon }}</span>
+          <span class="stat-label">{{ 'TICKET_DASHBOARD.STATS.DUE_SOON' | translate }}</span>
+        </div>
+      </a>
+
+      <a class="stat-card stat-card-link" routerLink="/tickets" [queryParams]="{ subState: TicketSubState.Red }">
+        <div class="stat-icon-wrap overdue">
+          <mat-icon>error</mat-icon>
+        </div>
+        <div class="stat-body">
+          <span class="stat-value">{{ stats.overdue }}</span>
+          <span class="stat-label">{{ 'TICKET_DASHBOARD.STATS.OVERDUE' | translate }}</span>
+        </div>
+      </a>
+    }
+
+  </div>
+
+  <!-- Recent tickets -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <h3>{{ 'TICKET_DASHBOARD.RECENT_TICKETS' | translate }}</h3>
+      <a routerLink="/tickets" class="view-all">{{ 'TICKET_DASHBOARD.VIEW_ALL' | translate }} →</a>
+    </div>
+
+    @if (loading) {
+      <div class="ticket-list">
+        @for (i of [1,2,3,4,5]; track i) {
+          <div class="ticket-row">
+            <span class="skeleton" style="width:10px;height:10px;border-radius:50%;flex-shrink:0"></span>
+            <div class="skeleton-lines">
+              <span class="skeleton" style="width:140px;height:13px"></span>
+              <span class="skeleton" style="width:200px;height:12px;margin-top:5px"></span>
+            </div>
+          </div>
+        }
+      </div>
+    } @else if (recentTickets.length === 0) {
+      <div class="empty-state">
+        <mat-icon>confirmation_number</mat-icon>
+        <p>{{ 'TICKET_DASHBOARD.EMPTY' | translate }}</p>
+      </div>
+    } @else {
+      <div class="ticket-list">
+        @for (t of recentTickets; track t.id) {
+          <div class="ticket-row" (click)="openTicket(t)">
+            <span class="sub-state-dot" [class]="getSubStateDotClass(t.subState)"></span>
+            <div class="ticket-meta">
+              <span class="ticket-title">
+                <span class="ticket-number">{{ t.ticketNumber }}</span> · {{ t.title }}
+              </span>
+              <span class="ticket-sub">
+                {{ 'TICKET_DASHBOARD.CREATED_BY' | translate }} {{ t.createdByName }} · {{ t.createdAt | date:'d MMM, HH:mm' }}
+              </span>
+            </div>
+            <span class="ticket-type-tag" [style.background-color]="t.ticketTypeColor + '1A'" [style.color]="t.ticketTypeColor">
+              {{ t.ticketTypeName }}
+            </span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+</div>

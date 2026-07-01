@@ -22,6 +22,11 @@
     <div *appHasRole="'Admin'">
       <div class="nav-section-label">{{ 'NAV.ADMINISTRATION' | translate }}</div>
 
+      <a routerLink="/overview" routerLinkActive="active" class="nav-item">
+        <mat-icon>bar_chart</mat-icon>
+        <span>{{ 'NAV.OVERVIEW' | translate }}</span>
+      </a>
+
       <a routerLink="/users" routerLinkActive="active" class="nav-item">
         <mat-icon>people</mat-icon>
         <span>{{ 'NAV.USERS' | translate }}</span>

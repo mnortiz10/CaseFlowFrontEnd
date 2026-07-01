@@ -16,6 +16,7 @@
         <mat-card-title>{{ 'ROLES.TITLE' | translate }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
+        <div class="table-scroll">
         <table mat-table [dataSource]="roles" class="full-table">
 
           <ng-container matColumnDef="name">
@@ -88,6 +89,7 @@
             </tr>
           }
         </table>
+        </div>
       </mat-card-content>
     </mat-card>
 
