@@ -1,26 +1,29 @@
 import {
   TranslateLoader,
   mergeDeep
-} from "./chunk-54YQXQ3X.js";
+} from "./chunk-M3QRLXGA.js";
 import {
   HttpBackend,
   HttpClient
-} from "./chunk-OODSTIQV.js";
-import "./chunk-OMLNW6SH.js";
+} from "./chunk-CO52Q7M7.js";
+import "./chunk-BP5SFGIK.js";
 import {
   Injectable,
   InjectionToken,
   inject,
   setClassMetadata,
   ɵɵdefineInjectable
-} from "./chunk-Y6PJ4ZOE.js";
+} from "./chunk-7Z6LWBVI.js";
+import {
+  forkJoin
+} from "./chunk-IHEXEIBP.js";
+import "./chunk-BVOEPT5O.js";
 import {
   __spreadValues,
   catchError,
-  forkJoin,
   map,
   of
-} from "./chunk-4J3J6DBT.js";
+} from "./chunk-GXJPSUWS.js";
 
 // node_modules/@ngx-translate/http-loader/fesm2022/ngx-translate-http-loader.mjs
 var TRANSLATE_HTTP_LOADER_CONFIG = new InjectionToken("TRANSLATE_HTTP_LOADER_CONFIG");

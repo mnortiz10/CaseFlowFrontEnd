@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>{{ 'TICKETS.CREATE' | translate }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="flex flex-col gap-1 pt-1">
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'TICKETS.TITLE_LABEL' | translate }}</mat-label>
+      <input matInput formControlName="title" />
+      @if (form.get('title')?.hasError('required')) {
+        <mat-error>{{ 'VALIDATION.REQUIRED' | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'TICKETS.DESCRIPTION' | translate }}</mat-label>
+      <textarea matInput formControlName="description" rows="4"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'TICKETS.TYPE' | translate }}</mat-label>
+      <mat-select formControlName="ticketTypeId">
+        @for (tt of ticketTypes; track tt.id) {
+          <mat-option [value]="tt.id">
+            <span class="w-3 h-3 rounded-full inline-block mr-1" [style.background-color]="tt.color"></span>
+            {{ tt.name }}
+          </mat-option>
+        }
+      </mat-select>
+      @if (form.get('ticketTypeId')?.hasError('required')) {
+        <mat-error>{{ 'VALIDATION.REQUIRED' | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'TICKETS.ASSIGN_TO' | translate }}</mat-label>
+      <mat-icon matPrefix>person</mat-icon>
+      <mat-select formControlName="assignedToUserId">
+        <mat-option [value]="null">{{ 'TICKETS.UNASSIGNED' | translate }}</mat-option>
+        @for (u of users; track u.id) {
+          <mat-option [value]="u.id">{{ u.firstName }} {{ u.lastName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="null">{{ 'COMMON.CANCEL' | translate }}</button>
+  <button mat-flat-button color="primary" [disabled]="saving" (click)="save()">
+    @if (saving) {
+      <mat-spinner diameter="20"></mat-spinner>
+    } @else {
+      {{ 'TICKETS.CREATE' | translate }}
+    }
+  </button>
+</mat-dialog-actions>

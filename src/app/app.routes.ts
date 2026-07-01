@@ -38,6 +38,26 @@ export const routes: Routes = [
       {
         path: 'profile',
         loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent)
+      },
+      {
+        path: 'ticket-types',
+        loadComponent: () => import('./features/ticket-types/ticket-types.component').then(m => m.TicketTypesComponent)
+      },
+      {
+        path: 'workflows',
+        loadComponent: () => import('./features/workflows/workflows.component').then(m => m.WorkflowsComponent)
+      },
+      {
+        path: 'workflows/:id',
+        loadComponent: () => import('./features/workflows/workflow-builder/workflow-builder.component').then(m => m.WorkflowBuilderComponent)
+      },
+      {
+        path: 'tickets',
+        loadComponent: () => import('./features/tickets/tickets.component').then(m => m.TicketsComponent)
+      },
+      {
+        path: 'tickets/:id',
+        loadComponent: () => import('./features/tickets/ticket-detail/ticket-detail.component').then(m => m.TicketDetailComponent)
       }
     ]
   },

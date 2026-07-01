@@ -25,7 +25,14 @@
       "PowerShell($playwrightPath = \\(npx playwright --version 2>&1\\)[0]; $paths = [System.Environment]::GetEnvironmentVariable\\(\"PATH\"\\) -split \";\"; $paths | ForEach-Object { if \\(Test-Path \"$_\\\\playwright.cmd\"\\) { Write-Host $_ } })",
       "PowerShell(cd \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\"; dotnet build CaseFlow.API/CaseFlow.API.csproj --output \"$env:TEMP\\\\caseflow-build-check\" 2>&1 | Select-Object -Last 15)",
       "PowerShell(cd \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\"; dotnet build CaseFlow.API/CaseFlow.API.csproj --output \"$env:TEMP\\\\caseflow-build-check2\" 2>&1 | Select-Object -Last 8)",
-      "PowerShell(dotnet build \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.API\\\\CaseFlow.API.csproj\" --output \"$env:TEMP\\\\cf-build3\" 2>&1 | Select-Object -Last 5)"
+      "PowerShell(dotnet build \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.API\\\\CaseFlow.API.csproj\" --output \"$env:TEMP\\\\cf-build3\" 2>&1 | Select-Object -Last 5)",
+      "Bash(cd /c/Users/marti/CaseFlow && ls -la)",
+      "Bash(ls \"c:\\\\Users\\\\marti\\\\CaseFlow\" 2>/dev/null || echo \"Not found\")",
+      "PowerShell(dotnet build \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.API\\\\CaseFlow.API.csproj\" -q 2>&1)",
+      "PowerShell(dotnet build \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.Application\\\\CaseFlow.Application.csproj\" -q 2>&1)",
+      "PowerShell(dotnet build \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.Application\\\\CaseFlow.Application.csproj\" 2>&1 | Where-Object { $_ -match \"error CS\" } | Select-Object -First 5)",
+      "PowerShell(Set-Location \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\frontend\\\\caseflow-ui\"; npx ng build --configuration=development 2>&1 | Where-Object { $_ -match \"\\(?i\\)\\\\berror\\\\b\" } | Select-Object -First 10)",
+      "PowerShell(Stop-Process -Id 16392 -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500; cd \"c:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.API\"; dotnet build --no-restore 2>&1 | Where-Object { $_ -match \"error|warning CS|Build succeeded|Error\\\\\\(s\\\\\\)\" } | Select-Object -Last 10)"
     ]
   }
 }

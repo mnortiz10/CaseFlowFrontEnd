@@ -168,3 +168,32 @@ html, body {
 .mat-mdc-dialog-surface {
   border-radius: 14px !important;
 }
+
+/* ─── Responsive: dialogs full-width on mobile ──────────────────────── */
+@media (max-width: 640px) {
+  .cdk-overlay-pane {
+    max-width: calc(100vw - 32px) !important;
+    width: calc(100vw - 32px) !important;
+  }
+  .mat-mdc-dialog-surface {
+    border-radius: 12px !important;
+  }
+  .mat-mdc-dialog-content {
+    max-height: 70vh !important;
+  }
+}
+
+/* ─── Prevent accidental horizontal overflow ────────────────────────── */
+body { overflow-x: hidden; }
+
+/* ─── Mat paginator mobile ──────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .mat-mdc-paginator-container {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    padding: 8px 4px !important;
+  }
+  .mat-mdc-paginator-page-size {
+    margin-right: 0 !important;
+  }
+}
