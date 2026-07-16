@@ -22,6 +22,11 @@
     <div *appHasRole="'Admin'">
       <div class="nav-section-label">{{ 'NAV.ADMINISTRATION' | translate }}</div>
 
+      <a routerLink="/overview" routerLinkActive="active" class="nav-item">
+        <mat-icon>bar_chart</mat-icon>
+        <span>{{ 'NAV.OVERVIEW' | translate }}</span>
+      </a>
+
       <a routerLink="/users" routerLinkActive="active" class="nav-item">
         <mat-icon>people</mat-icon>
         <span>{{ 'NAV.USERS' | translate }}</span>
@@ -38,26 +43,25 @@
       </a>
     </div>
 
-    <!-- Módulos futuros -->
-    <div class="nav-section-label">{{ 'NAV.MODULES' | translate }}</div>
+    <!-- Gestión de Tickets -->
+    @if (hasTicketManagementAccess) {
+      <div class="nav-section-label">{{ 'NAV.TICKET_MANAGEMENT' | translate }}</div>
 
-    <div class="nav-item disabled" [matTooltip]="'NAV.COMING_SOON' | translate" matTooltipPosition="right">
-      <mat-icon>timeline</mat-icon>
-      <span>{{ 'NAV.STATES' | translate }}</span>
-      <span class="soon-badge">{{ 'NAV.COMING_SOON' | translate }}</span>
-    </div>
+      <a *appHasPermission="'tickets.view'" routerLink="/tickets" routerLinkActive="active" class="nav-item">
+        <mat-icon>confirmation_number</mat-icon>
+        <span>{{ 'NAV.TICKETS' | translate }}</span>
+      </a>
 
-    <div class="nav-item disabled" [matTooltip]="'NAV.COMING_SOON' | translate" matTooltipPosition="right">
-      <mat-icon>table_chart</mat-icon>
-      <span>{{ 'NAV.ABMS' | translate }}</span>
-      <span class="soon-badge">{{ 'NAV.COMING_SOON' | translate }}</span>
-    </div>
+      <a *appHasPermission="'ticket_types.view'" routerLink="/ticket-types" routerLinkActive="active" class="nav-item">
+        <mat-icon>category</mat-icon>
+        <span>{{ 'NAV.TICKET_TYPES' | translate }}</span>
+      </a>
 
-    <div class="nav-item disabled" [matTooltip]="'NAV.COMING_SOON' | translate" matTooltipPosition="right">
-      <mat-icon>list</mat-icon>
-      <span>{{ 'NAV.LISTS' | translate }}</span>
-      <span class="soon-badge">{{ 'NAV.COMING_SOON' | translate }}</span>
-    </div>
+      <a *appHasPermission="'workflows.view'" routerLink="/workflows" routerLinkActive="active" class="nav-item">
+        <mat-icon>account_tree</mat-icon>
+        <span>{{ 'NAV.WORKFLOWS' | translate }}</span>
+      </a>
+    }
   </nav>
 
   <!-- User section -->

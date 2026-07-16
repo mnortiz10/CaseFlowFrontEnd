@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
+import { permissionGuard } from './core/guards/permission.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -15,7 +16,13 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./features/tickets/ticket-dashboard/ticket-dashboard.component').then(m => m.TicketDashboardComponent)
+      },
+      {
+        path: 'overview',
+        loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
+        canActivate: [roleGuard],
+        data: { role: 'Admin' }
       },
       {
         path: 'users',
@@ -38,6 +45,36 @@ export const routes: Routes = [
       {
         path: 'profile',
         loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent)
+      },
+      {
+        path: 'ticket-types',
+        loadComponent: () => import('./features/ticket-types/ticket-types.component').then(m => m.TicketTypesComponent),
+        canActivate: [permissionGuard],
+        data: { permission: 'ticket_types.view' }
+      },
+      {
+        path: 'workflows',
+        loadComponent: () => import('./features/workflows/workflows.component').then(m => m.WorkflowsComponent),
+        canActivate: [permissionGuard],
+        data: { permission: 'workflows.view' }
+      },
+      {
+        path: 'workflows/:id',
+        loadComponent: () => import('./features/workflows/workflow-builder/workflow-builder.component').then(m => m.WorkflowBuilderComponent),
+        canActivate: [permissionGuard],
+        data: { permission: 'workflows.view' }
+      },
+      {
+        path: 'tickets',
+        loadComponent: () => import('./features/tickets/tickets.component').then(m => m.TicketsComponent),
+        canActivate: [permissionGuard],
+        data: { permission: 'tickets.view' }
+      },
+      {
+        path: 'tickets/:id',
+        loadComponent: () => import('./features/tickets/ticket-detail/ticket-detail.component').then(m => m.TicketDetailComponent),
+        canActivate: [permissionGuard],
+        data: { permission: 'tickets.view' }
       }
     ]
   },

@@ -11,6 +11,11 @@
     "PROFILE": "Profile",
     "LOGOUT": "Sign out",
     "ADMINISTRATION": "Administration",
+    "OVERVIEW": "Overview",
+    "TICKET_MANAGEMENT": "Ticket Management",
+    "TICKETS": "Tickets",
+    "TICKET_TYPES": "Ticket Types",
+    "WORKFLOWS": "Workflows",
     "MODULES": "Modules",
     "COMING_SOON": "Soon",
     "STATES": "States",
@@ -55,6 +60,20 @@
       "STATUS": "Status",
       "LAST_LOGIN": "Last login"
     }
+  },
+  "TICKET_DASHBOARD": {
+    "WELCOME": "Welcome, {{name}}",
+    "SUBTITLE": "Here is how ticket operations look today.",
+    "GO_TO_TICKETS": "Go to Tickets",
+    "STATS": {
+      "ON_TIME": "On time",
+      "DUE_SOON": "Due soon",
+      "OVERDUE": "Overdue"
+    },
+    "RECENT_TICKETS": "Recently created tickets",
+    "VIEW_ALL": "View all",
+    "CREATED_BY": "Created by",
+    "EMPTY": "No tickets yet"
   },
   "USERS": {
     "TITLE": "Users",
@@ -165,6 +184,12 @@
       "SLUG_HINT": "The slug cannot be changed once created"
     },
     "SAVE": "Save changes",
+    "ADVANCED": {
+      "TITLE": "Advanced options",
+      "DESC": "Additional settings for system behavior.",
+      "PROMPT_EXTEND_TIME": "Ask to extend the due date when saving a state",
+      "PROMPT_EXTEND_TIME_HINT": "When saving or advancing a ticket's state, you'll be offered the option to extend the due date (24h by default, editable). You can choose not to add time and keep the current due date."
+    },
     "COMING_SOON_TITLE": "More settings coming soon",
     "COMING_SOON_DESC": "Notifications, integrations, billing and more.",
     "TOAST": {

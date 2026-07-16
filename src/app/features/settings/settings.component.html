@@ -30,6 +30,27 @@
     </div>
   </div>
 
+  <!-- Advanced options section -->
+  <div class="settings-section">
+    <div class="section-meta">
+      <h3 class="section-meta-title">{{ 'SETTINGS.ADVANCED.TITLE' | translate }}</h3>
+      <p class="section-meta-desc">{{ 'SETTINGS.ADVANCED.DESC' | translate }}</p>
+    </div>
+
+    <form [formGroup]="advancedForm" class="section-form">
+      <mat-checkbox formControlName="promptExtendTimeOnStateSave">
+        {{ 'SETTINGS.ADVANCED.PROMPT_EXTEND_TIME' | translate }}
+      </mat-checkbox>
+      <p class="section-meta-desc">{{ 'SETTINGS.ADVANCED.PROMPT_EXTEND_TIME_HINT' | translate }}</p>
+    </form>
+
+    <div class="section-actions">
+      <button mat-flat-button class="save-btn" [disabled]="savingAdvanced" (click)="saveAdvanced()">
+        {{ 'SETTINGS.SAVE' | translate }}
+      </button>
+    </div>
+  </div>
+
   <!-- Coming soon -->
   <mat-card class="coming-card">
     <mat-card-content>

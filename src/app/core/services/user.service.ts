@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface UserDto {
-  id: string;
+  id: number;
   firstName: string;
   lastName: string;
   email: string;
@@ -48,7 +48,16 @@ export class UserService {
     return this.http.get<PagedResult<UserDto>>(this.base, { params });
   }
 
-  getUser(id: string): Observable<UserDto> {
+  getAllActive(): Observable<UserDto[]> {
+    return new Observable(obs => {
+      this.getUsers(1, 200, undefined, true).subscribe({
+        next: r => { obs.next(r.items); obs.complete(); },
+        error: e => obs.error(e),
+      });
+    });
+  }
+
+  getUser(id: number): Observable<UserDto> {
     return this.http.get<UserDto>(`${this.base}/${id}`);
   }
 
@@ -56,15 +65,15 @@ export class UserService {
     return this.http.post<UserDto>(this.base, dto);
   }
 
-  updateUser(id: string, dto: UpdateUserDto): Observable<UserDto> {
+  updateUser(id: number, dto: UpdateUserDto): Observable<UserDto> {
     return this.http.put<UserDto>(`${this.base}/${id}`, dto);
   }
 
-  deleteUser(id: string): Observable<void> {
+  deleteUser(id: number): Observable<void> {
     return this.http.delete<void>(`${this.base}/${id}`);
   }
 
-  assignRoles(id: string, roles: string[]): Observable<void> {
+  assignRoles(id: number, roles: string[]): Observable<void> {
     return this.http.post<void>(`${this.base}/${id}/roles`, { roles });
   }
 }

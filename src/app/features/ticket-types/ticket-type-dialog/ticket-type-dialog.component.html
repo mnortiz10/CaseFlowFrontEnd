@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>
+  {{ (isEdit ? 'TICKET_TYPES.EDIT' : 'TICKET_TYPES.CREATE') | translate }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form">
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'TICKET_TYPES.NAME' | translate }}</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.get('name')?.hasError('required')) {
+        <mat-error>{{ 'VALIDATION.REQUIRED' | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'TICKET_TYPES.DESCRIPTION' | translate }}</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+    </mat-form-field>
+
+    <div class="color-row">
+      <label class="text-sm text-gray-600">{{ 'TICKET_TYPES.COLOR' | translate }}</label>
+      <input type="color" formControlName="color" class="w-10 h-10 rounded cursor-pointer border" />
+      <span class="text-sm font-mono text-gray-500">{{ form.get('color')?.value }}</span>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'TICKET_TYPES.WORKFLOW' | translate }}</mat-label>
+      <mat-select formControlName="workflowDefinitionId">
+        <mat-option [value]="null">{{ 'COMMON.NONE' | translate }}</mat-option>
+        @for (wf of workflows; track wf.id) {
+          <mat-option [value]="wf.id">{{ wf.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (isEdit) {
+      <div class="status-row">
+        <mat-checkbox formControlName="isActive">
+          {{ 'COMMON.ACTIVE' | translate }}
+        </mat-checkbox>
+      </div>
+    }
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false">{{ 'COMMON.CANCEL' | translate }}</button>
+  <button mat-flat-button color="primary" [disabled]="saving" (click)="save()">
+    @if (saving) {
+      <mat-spinner diameter="20"></mat-spinner>
+    } @else {
+      {{ 'COMMON.SAVE' | translate }}
+    }
+  </button>
+</mat-dialog-actions>

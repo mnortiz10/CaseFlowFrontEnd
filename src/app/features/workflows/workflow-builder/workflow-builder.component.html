@@ -1,0 +1,145 @@
+<div class="builder-page">
+  @if (loading) {
+    <div class="flex justify-center py-16">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  } @else if (workflow) {
+
+    <!-- Header -->
+    <div class="builder-header">
+      <div class="flex items-center gap-3">
+        <button mat-icon-button (click)="back()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div>
+          <h1 class="text-xl font-bold text-gray-800 leading-tight">{{ workflow.name }}</h1>
+          @if (workflow.description) {
+            <p class="text-sm text-gray-400">{{ workflow.description }}</p>
+          }
+        </div>
+      </div>
+      <button mat-flat-button color="primary" (click)="openAddState()">
+        <mat-icon>add</mat-icon>
+        {{ 'WORKFLOWS.ADD_STATE' | translate }}
+      </button>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+      <span class="legend-item"><span class="dot" style="background:#22c55e"></span> {{ 'WORKFLOWS.INITIAL' | translate }}</span>
+      <span class="legend-item"><span class="dot" style="background:#3b82f6"></span> Normal</span>
+      <span class="legend-item"><span class="dot" style="background:#8b5cf6"></span> {{ 'WORKFLOWS.FINAL' | translate }}</span>
+      <span class="legend-item drag-hint"><mat-icon style="font-size:14px;width:14px;height:14px;vertical-align:middle">drag_indicator</mat-icon> Arrastrá para reordenar</span>
+    </div>
+
+    <!-- Flow canvas -->
+    <div class="flow-canvas">
+      <div
+        cdkDropList
+        class="flow-list"
+        (cdkDropListDropped)="drop($event)">
+
+        @for (state of sortedStates; track state.id; let last = $last; let idx = $index) {
+          <div cdkDrag class="flow-row">
+
+            <!-- CDK drag placeholder -->
+            <div class="drag-placeholder-box" *cdkDragPlaceholder></div>
+
+            <!-- Left spine -->
+            <div class="spine">
+              <div class="spine-node" [style.background]="getNodeColor(state)" [style.border-color]="getNodeColor(state)">
+                @if (state.isInitial) {
+                  <mat-icon style="font-size:16px;width:16px;height:16px;color:white">play_arrow</mat-icon>
+                } @else if (state.isFinal) {
+                  <mat-icon style="font-size:16px;width:16px;height:16px;color:white">stop</mat-icon>
+                } @else {
+                  <span class="step-num">{{ idx + 1 }}</span>
+                }
+              </div>
+              @if (!last) {
+                <div class="spine-line" [style.border-color]="getNodeColor(state)"></div>
+              }
+            </div>
+
+            <!-- State card -->
+            <div class="state-card" [style.border-left-color]="getNodeColor(state)">
+
+              <!-- Drag handle -->
+              <mat-icon cdkDragHandle class="drag-handle" matTooltip="Arrastrá para reordenar">
+                drag_indicator
+              </mat-icon>
+
+              <!-- Main info -->
+              <div class="card-body">
+                <div class="card-title-row">
+                  <span class="card-name">{{ state.name }}</span>
+                  <div class="badges">
+                    @if (state.isInitial) {
+                      <span class="badge badge-green">Inicial</span>
+                    }
+                    @if (state.isFinal) {
+                      <span class="badge badge-purple">Final</span>
+                    }
+                    @if (state.canTransitionToFinal && !state.isFinal) {
+                      <span class="badge badge-blue">→ Final</span>
+                    }
+                  </div>
+                </div>
+
+                <div class="card-meta">
+                  @if (state.formFields.length > 0) {
+                    <span class="meta-item">
+                      <mat-icon class="meta-icon">list_alt</mat-icon>
+                      {{ state.formFields.length }} {{ 'WORKFLOWS.FIELDS' | translate }}
+                    </span>
+                  }
+                  @if (state.checklistItems.length > 0) {
+                    <span class="meta-item">
+                      <mat-icon class="meta-icon">checklist</mat-icon>
+                      {{ state.checklistItems.length }} {{ 'WORKFLOWS.CHECKLIST_ITEMS' | translate }}
+                    </span>
+                  }
+                  @if (!state.isFinal) {
+                    <span class="meta-item threshold yellow">
+                      <mat-icon class="meta-icon">schedule</mat-icon>
+                      {{ state.yellowThresholdHours }}h
+                    </span>
+                    <span class="meta-item threshold red">
+                      <mat-icon class="meta-icon">timer_off</mat-icon>
+                      {{ state.redThresholdHours }}h
+                    </span>
+                  }
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="card-actions">
+                <button mat-icon-button (click)="openEditState(state)" matTooltip="{{ 'COMMON.EDIT' | translate }}">
+                  <mat-icon class="text-gray-400">edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteState(state)" matTooltip="{{ 'COMMON.DELETE' | translate }}">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        }
+
+      </div>
+
+      <!-- Empty state -->
+      @if (sortedStates.length === 0) {
+        <div class="empty-flow">
+          <mat-icon style="font-size:48px;width:48px;height:48px;color:#cbd5e1">account_tree</mat-icon>
+          <p class="text-gray-400 mt-2">Este workflow no tiene estados todavía.</p>
+          <button mat-flat-button color="primary" class="mt-3" (click)="openAddState()">
+            <mat-icon>add</mat-icon>
+            Agregar primer estado
+          </button>
+        </div>
+      }
+    </div>
+
+  }
+</div>

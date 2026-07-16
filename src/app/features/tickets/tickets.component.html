@@ -1,0 +1,164 @@
+<div class="p-6">
+  <mat-card>
+    <mat-card-header class="flex items-center justify-between mb-2">
+      <mat-card-title>{{ 'TICKETS.TITLE' | translate }}</mat-card-title>
+      <button mat-flat-button color="primary" (click)="openCreate()">
+        <mat-icon>add</mat-icon>
+        {{ 'TICKETS.CREATE' | translate }}
+      </button>
+    </mat-card-header>
+
+    <!-- Filtros — fila única responsive -->
+    <div class="filter-bar" [formGroup]="filterForm">
+
+      <mat-form-field appearance="outline" class="filter-title">
+        <mat-label>{{ 'TICKETS.FILTER_TITLE' | translate }}</mat-label>
+        <mat-icon matPrefix>title</mat-icon>
+        <input matInput formControlName="title" [placeholder]="'TICKETS.FILTER_TITLE_PLACEHOLDER' | translate" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-sm">
+        <mat-label>{{ 'TICKETS.FILTER_NUMBER' | translate }}</mat-label>
+        <mat-icon matPrefix>tag</mat-icon>
+        <input matInput formControlName="ticketNumber" placeholder="TKT-..." />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-sm">
+        <mat-label>{{ 'TICKETS.FILTER_TYPE' | translate }}</mat-label>
+        <mat-select formControlName="ticketTypeId">
+          <mat-option [value]="null">{{ 'COMMON.ALL' | translate }}</mat-option>
+          @for (tt of ticketTypes; track tt.id) {
+            <mat-option [value]="tt.id">
+              <span class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full inline-block flex-shrink-0" [style.background-color]="tt.color"></span>
+                {{ tt.name }}
+              </span>
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-sm">
+        <mat-label>{{ 'TICKETS.FILTER_STATE' | translate }}</mat-label>
+        <mat-select formControlName="stateId">
+          <mat-option [value]="null">{{ 'COMMON.ALL' | translate }}</mat-option>
+          @for (s of workflowStates; track s.id) {
+            <mat-option [value]="s.id">{{ s.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-sm">
+        <mat-label>{{ 'TICKETS.FILTER_VIGENCIA' | translate }}</mat-label>
+        <mat-select formControlName="subState">
+          @for (opt of subStateOptions; track opt.value) {
+            <mat-option [value]="opt.value">{{ opt.label | translate }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      @if (hasActiveFilters()) {
+        <button mat-stroked-button class="filter-clear" (click)="clearFilters()">
+          <mat-icon>filter_alt_off</mat-icon>
+          Limpiar
+        </button>
+      }
+    </div>
+
+    <mat-card-content>
+      <table mat-table [dataSource]="tickets" class="w-full">
+
+        <ng-container matColumnDef="subState">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let t">
+            <span class="w-3 h-3 rounded-full inline-block"
+              [class]="getSubStateClass(t.subState)"
+              [matTooltip]="getSubStateLabel(t.subState)"></span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="ticketNumber">
+          <th mat-header-cell *matHeaderCellDef>{{ 'TICKETS.NUMBER' | translate }}</th>
+          <td mat-cell *matCellDef="let t">
+            <span class="font-mono text-sm text-blue-600">{{ t.ticketNumber }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>{{ 'TICKETS.TITLE_COL' | translate }}</th>
+          <td mat-cell *matCellDef="let t" class="font-medium max-w-xs truncate">{{ t.title }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="ticketType">
+          <th mat-header-cell *matHeaderCellDef>{{ 'TICKETS.TYPE' | translate }}</th>
+          <td mat-cell *matCellDef="let t">
+            <div class="flex items-center gap-1">
+              <span class="w-2.5 h-2.5 rounded-full" [style.background-color]="t.ticketTypeColor"></span>
+              <span class="text-sm">{{ t.ticketTypeName }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="currentState">
+          <th mat-header-cell *matHeaderCellDef>{{ 'TICKETS.STATE' | translate }}</th>
+          <td mat-cell *matCellDef="let t"><mat-chip>{{ t.currentStateName }}</mat-chip></td>
+        </ng-container>
+
+        <ng-container matColumnDef="timeInState">
+          <th mat-header-cell *matHeaderCellDef>{{ 'TICKETS.TIME_IN_STATE' | translate }}</th>
+          <td mat-cell *matCellDef="let t">
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 tabular-nums">{{ hoursInState(t.stateEnteredAt) }}</span>
+              <span class="text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap"
+                [class]="getSubStatePillClass(t.subState)">
+                {{ getSubStateLabel(t.subState) }}
+              </span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="assignedTo">
+          <th mat-header-cell *matHeaderCellDef>{{ 'TICKETS.ASSIGNED_TO' | translate }}</th>
+          <td mat-cell *matCellDef="let t" (click)="$event.stopPropagation()">
+            @if (auth.hasPermission('tickets.reassign')) {
+              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="assignee-select">
+                <!-- mat-select treats a null value as "empty" and never shows an option's label for it,
+                     so unassigned uses the 0 sentinel and is translated back to null before calling the API. -->
+                <mat-select [value]="t.assignedToUserId ?? 0" [disabled]="reassigningId === t.id"
+                  (selectionChange)="changeAssignee(t, $event.value === 0 ? null : $event.value)">
+                  <mat-option [value]="0">{{ 'TICKETS.UNASSIGNED' | translate }}</mat-option>
+                  @for (u of users; track u.id) {
+                    <mat-option [value]="u.id">{{ u.firstName }} {{ u.lastName }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            } @else {
+              <span class="text-sm text-gray-500">{{ t.assignedToName ?? '—' }}</span>
+            }
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+            class="hover:bg-gray-50 cursor-pointer"
+            (click)="openDetail(row)"></tr>
+
+        @if (tickets.length === 0) {
+          <tr class="mat-row">
+            <td [attr.colspan]="displayedColumns.length" class="text-center py-8 text-gray-400">
+              {{ 'TICKETS.EMPTY' | translate }}
+            </td>
+          </tr>
+        }
+      </table>
+
+      <mat-paginator
+        [length]="totalCount"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[10, 25, 50]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons>
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

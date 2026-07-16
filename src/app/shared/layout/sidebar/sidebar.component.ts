@@ -9,6 +9,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { HasRoleDirective } from '../../../core/directives/has-role.directive';
+import { HasPermissionDirective } from '../../../core/directives/has-permission.directive';
 
 @Component({
   selector: 'app-sidebar',
@@ -16,7 +17,7 @@ import { HasRoleDirective } from '../../../core/directives/has-role.directive';
   imports: [
     CommonModule, RouterModule, RouterLinkActive,
     MatIconModule, MatListModule, MatTooltipModule,
-    MatMenuModule, MatDividerModule, HasRoleDirective,
+    MatMenuModule, MatDividerModule, HasRoleDirective, HasPermissionDirective,
     TranslatePipe,
   ],
   templateUrl: './sidebar.component.html',
@@ -30,6 +31,12 @@ export class SidebarComponent {
   get userFullName(): string {
     const u = this.auth.currentUser;
     return u ? `${u.firstName} ${u.lastName}` : '';
+  }
+
+  get hasTicketManagementAccess(): boolean {
+    return this.auth.hasPermission('tickets.view')
+      || this.auth.hasPermission('ticket_types.view')
+      || this.auth.hasPermission('workflows.view');
   }
 
   get userInitials(): string {

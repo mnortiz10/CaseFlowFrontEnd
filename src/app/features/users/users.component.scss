@@ -112,6 +112,24 @@ td.mat-mdc-cell {
   padding-right: 8px !important;
 }
 
+/* ─── Mobile: ocultar columnas en tablas pequeñas ─────────────────── */
+@media (max-width: 640px) {
+  .mat-column-email,
+  .mat-column-roles,
+  .mat-column-lastLogin {
+    display: none !important;
+  }
+
+  .filter-field { min-width: 100%; }
+  .filter-select { width: 100%; }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .new-btn { width: 100%; justify-content: center; }
+}
+
 /* ─── Loading / Empty ─────────────────────────────────────────────── */
 .loading-row {
   display: flex;

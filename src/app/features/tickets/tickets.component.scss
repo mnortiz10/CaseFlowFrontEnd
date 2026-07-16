@@ -1,0 +1,39 @@
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #fafafa;
+  border-bottom: 1px solid #e5e7eb;
+
+  mat-form-field {
+    // Remove default bottom margin so fields sit flush
+    .mat-mdc-form-field-subscript-wrapper { display: none; }
+  }
+
+  .filter-title {
+    flex: 1 1 180px;
+    max-width: 260px;
+  }
+
+  .filter-sm {
+    flex: 0 0 160px;
+  }
+
+  .filter-clear {
+    margin-left: auto;
+    align-self: center;
+    height: 40px;
+    white-space: nowrap;
+  }
+}
+
+.assignee-select {
+  width: 170px;
+  font-size: 13px;
+
+  .mat-mdc-form-field-subscript-wrapper { display: none; }
+  .mat-mdc-text-field-wrapper { padding: 0 8px; }
+  .mat-mdc-form-field-infix { min-height: 0; padding: 6px 0; }
+}

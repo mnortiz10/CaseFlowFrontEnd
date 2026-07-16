@@ -38,7 +38,8 @@
 }
 
 /* ─── Table ───────────────────────────────────────────────────────── */
-.full-table { width: 100%; }
+.table-scroll { overflow-x: auto; }
+.full-table { width: 100%; min-width: 560px; }
 
 th.mat-mdc-header-cell {
   font-size: 0.72rem !important;
@@ -83,6 +84,23 @@ td.mat-mdc-cell {
 
 /* ─── Actions cell ────────────────────────────────────────────────── */
 .actions-cell { white-space: nowrap; text-align: right; padding-right: 8px !important; }
+
+/* ─── Mobile: ocultar columnas ────────────────────────────────────── */
+@media (max-width: 640px) {
+  .mat-column-description,
+  .mat-column-users,
+  .mat-column-permissions {
+    display: none !important;
+  }
+
+  .full-table { min-width: 0; }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .new-btn { width: 100%; justify-content: center; }
+}
 
 /* ─── Empty ───────────────────────────────────────────────────────── */
 .empty-msg {

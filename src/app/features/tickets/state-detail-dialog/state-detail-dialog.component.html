@@ -1,0 +1,111 @@
+<h2 mat-dialog-title class="flex items-center gap-2">
+  <mat-icon class="text-green-600">check_circle</mat-icon>
+  {{ data.stateName }}
+</h2>
+
+<mat-dialog-content class="min-w-96">
+
+  <!-- Tiempo y sub-estado -->
+  <div class="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
+    <mat-icon class="text-gray-400 text-base leading-none">schedule</mat-icon>
+    <div class="flex-1 text-sm">
+      <span class="text-gray-500">{{ 'TICKETS.STATE_DURATION' | translate }}:</span>
+      <strong class="ml-1">{{ formatDuration(data.totalHoursInState) }}</strong>
+      <span class="text-gray-400 text-xs ml-2">
+        ({{ data.enteredAt | date:'dd/MM HH:mm' }} → {{ data.transitionedAt | date:'dd/MM HH:mm' }})
+      </span>
+    </div>
+    <span class="text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap"
+      [class]="subStatePillClass(data.subStateAtCompletion)">
+      {{ subStateLabel(data.subStateAtCompletion) }}
+    </span>
+  </div>
+
+  <!-- Completado por -->
+  <p class="text-sm text-gray-500 mb-4 flex flex-wrap gap-1">
+    <span>{{ 'TICKETS.COMPLETED_ON' | translate }}</span>
+    <strong>{{ data.transitionedAt | date:'dd/MM/yyyy HH:mm' }}</strong>
+    <span>{{ 'TICKETS.BY' | translate }}</span>
+    <strong>{{ data.transitionedBy }}</strong>
+    @if (data.comment) {
+      <span class="italic text-gray-400">· "{{ data.comment }}"</span>
+    }
+  </p>
+
+  <!-- Extensiones de tiempo -->
+  @if (data.timeExtensions.length > 0) {
+    <div class="mb-4 border border-blue-100 rounded-lg p-3 bg-blue-50">
+      <h3 class="text-xs font-semibold text-blue-600 mb-2 uppercase tracking-wide flex items-center gap-1">
+        <mat-icon class="text-sm leading-none">update</mat-icon>
+        {{ 'TICKETS.TIME_EXTENSIONS' | translate }} ({{ data.timeExtensions.length }})
+      </h3>
+      <div class="space-y-1.5">
+        @for (ext of data.timeExtensions; track ext.grantedAt) {
+          <div class="text-sm flex items-start gap-2">
+            <span class="text-blue-500 font-medium whitespace-nowrap">+{{ ext.extensionHours }}h</span>
+            <span class="text-gray-500">
+              {{ ext.grantedAt | date:'dd/MM HH:mm' }} · {{ ext.grantedBy }}
+              @if (ext.reason) {
+                <span class="italic text-gray-400"> — "{{ ext.reason }}"</span>
+              }
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+    <mat-divider class="mb-4"></mat-divider>
+  }
+
+  <!-- Campos -->
+  @if (data.fieldValues.length > 0) {
+    <h3 class="text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wide">
+      {{ 'TICKETS.FIELDS' | translate }}
+    </h3>
+    <div class="space-y-2 mb-4">
+      @for (f of data.fieldValues; track f.fieldId) {
+        <div class="flex items-start gap-2 text-sm py-1 border-b border-gray-100 last:border-0">
+          <span class="font-medium text-gray-600 min-w-32">{{ f.label }}</span>
+          @if (isCheckbox(f)) {
+            <mat-icon class="text-base leading-none"
+              [class.text-green-600]="f.value === 'true'"
+              [class.text-gray-300]="f.value !== 'true'">
+              {{ f.value === 'true' ? 'check_circle' : 'radio_button_unchecked' }}
+            </mat-icon>
+          } @else {
+            <span class="text-gray-800">{{ f.value ?? '—' }}</span>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Checklist -->
+  @if (data.checklistValues.length > 0) {
+    @if (data.fieldValues.length > 0) {
+      <mat-divider class="mb-3"></mat-divider>
+    }
+    <h3 class="text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wide">
+      {{ 'TICKETS.CHECKLIST' | translate }}
+    </h3>
+    <div class="space-y-1">
+      @for (c of data.checklistValues; track c.checklistItemId) {
+        <div class="flex items-center gap-2 text-sm py-0.5">
+          <mat-icon class="text-base" [class.text-green-600]="c.isChecked" [class.text-gray-300]="!c.isChecked">
+            {{ c.isChecked ? 'check_box' : 'check_box_outline_blank' }}
+          </mat-icon>
+          <span [class.line-through]="c.isChecked" [class.text-gray-400]="c.isChecked">
+            {{ c.title }}{{ c.isRequired ? ' *' : '' }}
+          </span>
+        </div>
+      }
+    </div>
+  }
+
+  @if (data.fieldValues.length === 0 && data.checklistValues.length === 0) {
+    <p class="text-gray-400 text-sm text-center py-4">{{ 'TICKETS.NO_STATE_INFO' | translate }}</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>{{ 'COMMON.CLOSE' | translate }}</button>
+</mat-dialog-actions>

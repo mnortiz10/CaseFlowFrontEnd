@@ -105,3 +105,17 @@
 
   &:hover { background: var(--cf-bg) !important; }
 }
+
+/* ─── Mobile ────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .app-header { padding: 0 12px; }
+  .search-box { display: none; }
+  .lang-select { width: 66px; }
+  .tenant-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+    display: block;
+  }
+}
