@@ -1,4 +1,7 @@
 import {
+  takeUntilDestroyed
+} from "./chunk-WRCLOBHU.js";
+import {
   ChangeDetectorRef,
   DestroyRef,
   Directive,
@@ -10,7 +13,6 @@ import {
   Pipe,
   TemplateRef,
   ViewContainerRef,
-  assertInInjectionContext,
   computed,
   effect,
   inject,
@@ -30,7 +32,6 @@ import {
 } from "./chunk-IHEXEIBP.js";
 import {
   EMPTY,
-  Observable,
   Subject,
   __objRest,
   __restKey,
@@ -45,24 +46,8 @@ import {
   shareReplay,
   switchMap,
   take,
-  takeUntil,
   tap
 } from "./chunk-GXJPSUWS.js";
-
-// node_modules/@angular/core/fesm2022/rxjs-interop.mjs
-function takeUntilDestroyed(destroyRef) {
-  if (!destroyRef) {
-    assertInInjectionContext(takeUntilDestroyed);
-    destroyRef = inject(DestroyRef);
-  }
-  const destroyed$ = new Observable((observer) => {
-    const unregisterFn = destroyRef.onDestroy(observer.next.bind(observer));
-    return unregisterFn;
-  });
-  return (source) => {
-    return source.pipe(takeUntil(destroyed$));
-  };
-}
 
 // node_modules/@ngx-translate/core/fesm2022/ngx-translate-core.mjs
 function _(key) {
@@ -1609,13 +1594,4 @@ export {
   provideChildTranslateService,
   ITranslateService
 };
-/*! Bundled license information:
-
-@angular/core/fesm2022/rxjs-interop.mjs:
-  (**
-   * @license Angular v18.0.1
-   * (c) 2010-2024 Google LLC. https://angular.io/
-   * License: MIT
-   *)
-*/
-//# sourceMappingURL=chunk-M3QRLXGA.js.map
+//# sourceMappingURL=chunk-HBFVFRUY.js.map

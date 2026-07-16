@@ -179,6 +179,12 @@
       "SLUG_HINT": "El slug no puede modificarse una vez creado"
     },
     "SAVE": "Guardar cambios",
+    "ADVANCED": {
+      "TITLE": "Opciones avanzadas",
+      "DESC": "Configuraciones adicionales del comportamiento del sistema.",
+      "PROMPT_EXTEND_TIME": "Preguntar si extender el vencimiento al guardar un estado",
+      "PROMPT_EXTEND_TIME_HINT": "Al guardar o avanzar de estado en un ticket, se ofrece la opción de extender el tiempo de vencimiento (por defecto 24hs, editable). Podés optar por no agregar tiempo y mantener el vencimiento actual."
+    },
     "COMING_SOON_TITLE": "Más configuraciones próximamente",
     "COMING_SOON_DESC": "Notificaciones, integraciones, facturación y más.",
     "TOAST": {
@@ -235,7 +241,9 @@
     "DATE": "Fecha",
     "SEARCH": "Buscar",
     "MOVE_UP": "Subir",
-    "MOVE_DOWN": "Bajar"
+    "MOVE_DOWN": "Bajar",
+    "YES": "Sí",
+    "NO": "No"
   },
   "VALIDATION": {
     "REQUIRED": "Este campo es requerido"
@@ -300,6 +308,8 @@
     "SELECT_OPTIONS": "Opciones del select",
     "OPTION": "Opción",
     "ADD_OPTION": "Agregar opción",
+    "FINAL_FIELDS_HELP": "Los estados finales no tienen tiempo de vencimiento ni checklist. Solo pueden incluir un campo de descripción opcional.",
+    "FINAL_ADD_DESCRIPTION": "Agregar campo de descripción (opcional)",
     "TOAST": {
       "CREATED": "Workflow creado",
       "DELETED": "Workflow eliminado",
@@ -336,20 +346,30 @@
     "CHECKLIST": "Checklist",
     "COMMENT": "Comentario (opcional)",
     "ADVANCE": "Avanzar a",
-    "GO_FINAL": "Ir al estado final",
+    "FINALIZE_TICKET": "Finalizar ticket",
+    "FINALIZED": "Finalizado",
+    "FINALIZED_ON": "Finalizado el",
     "EXTEND_TIME": "Extender tiempo",
     "EXTENSION_HOURS": "Horas de extensión",
     "EXTENSION_REASON": "Motivo (opcional)",
     "EXTENSION_HINT": "El contador se reiniciará desde ahora + las horas indicadas",
     "EXTEND": "Extender",
-    "HISTORY": "Historial de transiciones",
-    "HISTORY_EMPTY": "Sin transiciones aún",
+    "EXTEND_TIME_PROMPT_TITLE": "¿Querés extender el vencimiento?",
+    "NO_EXTEND": "No agregar tiempo",
+    "HISTORY": "Historial de cambios",
+    "HISTORY_EMPTY": "Sin cambios registrados aún",
+    "RECENT_ACTIVITY": "Actividad reciente",
+    "VIEW_FULL_HISTORY": "Ver historial completo",
+    "ACTIVITY_TRANSITION": "avanzó a",
+    "ACTIVITY_SAVE": "guardó cambios en",
     "FROM_STATE": "Estado anterior",
     "TO_STATE": "Estado nuevo",
     "CHANGED_BY": "Por",
     "CREATED_BY": "Creado por",
     "WORKFLOW": "Workflow",
     "STATE_ENTERED": "En este estado desde",
+    "TIME_REMAINING_SUMMARY": "Quedan {{remaining}} para pasar a «{{nextLabel}}» — llevás {{elapsed}} de las {{total}} asignadas a este sub-estado",
+    "TIME_OVERDUE_SUMMARY": "Vencido hace {{overdue}} — llevás {{elapsed}} de las {{total}} asignadas a este estado",
     "OVERRIDE_UNTIL": "Tiempo extendido hasta",
     "COMPLETED_ON": "Completado el",
     "BY": "por",
@@ -359,12 +379,14 @@
     "ASSIGN_TO": "Asignar a",
     "UNASSIGNED": "Sin asignar",
     "SAVE_ASSIGN": "Guardar asignación",
+    "FIELD_REQUIRED": "Este campo es obligatorio",
     "TOAST": {
       "CREATED": "Ticket creado",
       "SAVED": "Datos del estado guardados",
       "TRANSITIONED": "Estado actualizado",
       "TIME_EXTENDED": "Tiempo extendido correctamente",
-      "REASSIGNED": "Asignación actualizada"
+      "REASSIGNED": "Asignación actualizada",
+      "REQUIRED_FIELDS": "Completá los campos obligatorios (*) antes de cambiar de estado"
     }
   },
   "ERRORS": {

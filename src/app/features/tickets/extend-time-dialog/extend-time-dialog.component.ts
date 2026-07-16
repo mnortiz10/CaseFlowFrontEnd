@@ -9,6 +9,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TicketService } from '../../../core/services/ticket.service';
 
+export interface ExtendTimeDialogData {
+  ticketId: number;
+  defaultHours?: number;
+  title?: string;
+  cancelLabel?: string;
+}
+
 @Component({
   selector: 'app-extend-time-dialog',
   standalone: true,
@@ -24,11 +31,11 @@ export class ExtendTimeDialogComponent {
   private readonly fb = inject(FormBuilder);
   private readonly ticketService = inject(TicketService);
   private readonly dialogRef = inject(MatDialogRef<ExtendTimeDialogComponent>);
-  readonly data: { ticketId: number } = inject(MAT_DIALOG_DATA);
+  readonly data: ExtendTimeDialogData = inject(MAT_DIALOG_DATA);
 
   saving = false;
   form = this.fb.group({
-    extensionHours: [8, [Validators.required, Validators.min(1)]],
+    extensionHours: [this.data.defaultHours ?? 8, [Validators.required, Validators.min(1)]],
     reason: [''],
   });
 

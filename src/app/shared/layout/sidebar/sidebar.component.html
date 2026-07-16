@@ -44,22 +44,24 @@
     </div>
 
     <!-- Gestión de Tickets -->
-    <div class="nav-section-label">{{ 'NAV.TICKET_MANAGEMENT' | translate }}</div>
+    @if (hasTicketManagementAccess) {
+      <div class="nav-section-label">{{ 'NAV.TICKET_MANAGEMENT' | translate }}</div>
 
-    <a routerLink="/tickets" routerLinkActive="active" class="nav-item">
-      <mat-icon>confirmation_number</mat-icon>
-      <span>{{ 'NAV.TICKETS' | translate }}</span>
-    </a>
+      <a *appHasPermission="'tickets.view'" routerLink="/tickets" routerLinkActive="active" class="nav-item">
+        <mat-icon>confirmation_number</mat-icon>
+        <span>{{ 'NAV.TICKETS' | translate }}</span>
+      </a>
 
-    <a routerLink="/ticket-types" routerLinkActive="active" class="nav-item">
-      <mat-icon>category</mat-icon>
-      <span>{{ 'NAV.TICKET_TYPES' | translate }}</span>
-    </a>
+      <a *appHasPermission="'ticket_types.view'" routerLink="/ticket-types" routerLinkActive="active" class="nav-item">
+        <mat-icon>category</mat-icon>
+        <span>{{ 'NAV.TICKET_TYPES' | translate }}</span>
+      </a>
 
-    <a routerLink="/workflows" routerLinkActive="active" class="nav-item">
-      <mat-icon>account_tree</mat-icon>
-      <span>{{ 'NAV.WORKFLOWS' | translate }}</span>
-    </a>
+      <a *appHasPermission="'workflows.view'" routerLink="/workflows" routerLinkActive="active" class="nav-item">
+        <mat-icon>account_tree</mat-icon>
+        <span>{{ 'NAV.WORKFLOWS' | translate }}</span>
+      </a>
+    }
   </nav>
 
   <!-- User section -->

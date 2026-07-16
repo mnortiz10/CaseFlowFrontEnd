@@ -99,14 +99,16 @@
                       {{ state.checklistItems.length }} {{ 'WORKFLOWS.CHECKLIST_ITEMS' | translate }}
                     </span>
                   }
-                  <span class="meta-item threshold yellow">
-                    <mat-icon class="meta-icon">schedule</mat-icon>
-                    {{ state.yellowThresholdHours }}h
-                  </span>
-                  <span class="meta-item threshold red">
-                    <mat-icon class="meta-icon">timer_off</mat-icon>
-                    {{ state.redThresholdHours }}h
-                  </span>
+                  @if (!state.isFinal) {
+                    <span class="meta-item threshold yellow">
+                      <mat-icon class="meta-icon">schedule</mat-icon>
+                      {{ state.yellowThresholdHours }}h
+                    </span>
+                    <span class="meta-item threshold red">
+                      <mat-icon class="meta-icon">timer_off</mat-icon>
+                      {{ state.redThresholdHours }}h
+                    </span>
+                  }
                 </div>
               </div>
 

@@ -19,6 +19,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TicketService, TicketListItemDto, TicketSubState } from '../../core/services/ticket.service';
 import { TicketTypeService, TicketTypeDto } from '../../core/services/ticket-type.service';
 import { WorkflowService, WorkflowStateDto } from '../../core/services/workflow.service';
+import { UserService, UserDto } from '../../core/services/user.service';
+import { AuthService } from '../../core/services/auth.service';
 import { CreateTicketDialogComponent } from './create-ticket-dialog/create-ticket-dialog.component';
 
 @Component({
@@ -37,6 +39,8 @@ export class TicketsComponent implements OnInit {
   private readonly service        = inject(TicketService);
   private readonly ticketTypeService = inject(TicketTypeService);
   private readonly workflowService   = inject(WorkflowService);
+  private readonly userService       = inject(UserService);
+  readonly auth = inject(AuthService);
   private readonly dialog   = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
@@ -48,6 +52,8 @@ export class TicketsComponent implements OnInit {
   tickets: TicketListItemDto[] = [];
   ticketTypes: TicketTypeDto[] = [];
   workflowStates: WorkflowStateDto[] = [];
+  users: UserDto[] = [];
+  reassigningId: number | null = null;
   totalCount = 0;
   page = 1;
   pageSize = 10;
@@ -71,6 +77,7 @@ export class TicketsComponent implements OnInit {
 
   ngOnInit(): void {
     this.ticketTypeService.getAll().subscribe({ next: tt => this.ticketTypes = tt });
+    this.userService.getAllActive().subscribe({ next: u => this.users = u });
 
     const subStateParam = this.route.snapshot.queryParamMap.get('subState');
     if (subStateParam != null && subStateParam !== '') {
@@ -156,6 +163,19 @@ export class TicketsComponent implements OnInit {
   }
 
   openDetail(t: TicketListItemDto): void { this.router.navigate(['/tickets', t.id]); }
+
+  changeAssignee(t: TicketListItemDto, userId: number | null): void {
+    this.reassigningId = t.id;
+    this.service.reassign(t.id, userId).subscribe({
+      next: (updated) => {
+        t.assignedToUserId = updated.assignedToUserId;
+        t.assignedToName = updated.assignedToName;
+        this.reassigningId = null;
+        this.snackBar.open(this.translate.instant('TICKETS.TOAST.REASSIGNED'), 'OK', { duration: 2000 });
+      },
+      error: () => (this.reassigningId = null),
+    });
+  }
 
   getSubStateClass(s: TicketSubState): string {
     return s === TicketSubState.Green ? 'bg-green-500' : s === TicketSubState.Yellow ? 'bg-yellow-400' : 'bg-red-500';

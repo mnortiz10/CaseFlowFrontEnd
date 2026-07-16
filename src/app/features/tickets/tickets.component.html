@@ -119,7 +119,23 @@
 
         <ng-container matColumnDef="assignedTo">
           <th mat-header-cell *matHeaderCellDef>{{ 'TICKETS.ASSIGNED_TO' | translate }}</th>
-          <td mat-cell *matCellDef="let t" class="text-sm text-gray-500">{{ t.assignedToName ?? '—' }}</td>
+          <td mat-cell *matCellDef="let t" (click)="$event.stopPropagation()">
+            @if (auth.hasPermission('tickets.reassign')) {
+              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="assignee-select">
+                <!-- mat-select treats a null value as "empty" and never shows an option's label for it,
+                     so unassigned uses the 0 sentinel and is translated back to null before calling the API. -->
+                <mat-select [value]="t.assignedToUserId ?? 0" [disabled]="reassigningId === t.id"
+                  (selectionChange)="changeAssignee(t, $event.value === 0 ? null : $event.value)">
+                  <mat-option [value]="0">{{ 'TICKETS.UNASSIGNED' | translate }}</mat-option>
+                  @for (u of users; track u.id) {
+                    <mat-option [value]="u.id">{{ u.firstName }} {{ u.lastName }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            } @else {
+              <span class="text-sm text-gray-500">{{ t.assignedToName ?? '—' }}</span>
+            }
+          </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

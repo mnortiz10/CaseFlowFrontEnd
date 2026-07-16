@@ -31,109 +31,130 @@
       </div>
     </mat-tab>
 
-    <!-- Tab 2: Tiempos -->
-    <mat-tab [label]="'WORKFLOWS.TAB_TIMES' | translate">
-      <div class="tab-content">
-        <p class="text-sm text-gray-500 mb-3">{{ 'WORKFLOWS.TIMES_HELP' | translate }}</p>
-        <form [formGroup]="timesForm" class="flex flex-col gap-1">
-          <mat-form-field appearance="outline">
-            <mat-label>{{ 'WORKFLOWS.YELLOW_HOURS' | translate }}</mat-label>
-            <input matInput type="number" formControlName="yellowThresholdHours" min="1" />
-            <mat-hint>{{ 'WORKFLOWS.YELLOW_HINT' | translate }}</mat-hint>
-          </mat-form-field>
+    <!-- Tab 2: Tiempos (no aplica a estados finales) -->
+    @if (!isFinalState) {
+      <mat-tab [label]="'WORKFLOWS.TAB_TIMES' | translate">
+        <div class="tab-content">
+          <p class="text-sm text-gray-500 mb-3">{{ 'WORKFLOWS.TIMES_HELP' | translate }}</p>
+          <form [formGroup]="timesForm" class="flex flex-col gap-1">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'WORKFLOWS.YELLOW_HOURS' | translate }}</mat-label>
+              <input matInput type="number" formControlName="yellowThresholdHours" min="1" />
+              <mat-hint>{{ 'WORKFLOWS.YELLOW_HINT' | translate }}</mat-hint>
+            </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>{{ 'WORKFLOWS.RED_HOURS' | translate }}</mat-label>
-            <input matInput type="number" formControlName="redThresholdHours" min="1" />
-            <mat-hint>{{ 'WORKFLOWS.RED_HINT' | translate }}</mat-hint>
-          </mat-form-field>
-        </form>
-      </div>
-    </mat-tab>
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'WORKFLOWS.RED_HOURS' | translate }}</mat-label>
+              <input matInput type="number" formControlName="redThresholdHours" min="1" />
+              <mat-hint>{{ 'WORKFLOWS.RED_HINT' | translate }}</mat-hint>
+            </mat-form-field>
+          </form>
+        </div>
+      </mat-tab>
+    }
 
     <!-- Tab 3: Campos -->
     <mat-tab [label]="'WORKFLOWS.TAB_FIELDS' | translate">
       <div class="tab-content">
-        @for (fg of fieldsArray.controls; track $index; let i = $index) {
-          <div class="mb-3 p-3 border rounded" [formGroup]="$any(fg)">
-            <div class="field-row">
+        @if (isFinalState) {
+          <p class="text-sm text-gray-500 mb-3">{{ 'WORKFLOWS.FINAL_FIELDS_HELP' | translate }}</p>
+          <mat-checkbox
+            [checked]="fieldsArray.length > 0"
+            (change)="toggleFinalDescriptionField($any($event).checked)">
+            {{ 'WORKFLOWS.FINAL_ADD_DESCRIPTION' | translate }}
+          </mat-checkbox>
+          @if (fieldsArray.length > 0) {
+            <div class="mt-3 p-3 border rounded" [formGroup]="$any(fieldsArray.at(0))">
               <mat-form-field appearance="outline">
                 <mat-label>{{ 'WORKFLOWS.FIELD_LABEL' | translate }}</mat-label>
                 <input matInput formControlName="label" />
               </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>{{ 'WORKFLOWS.FIELD_KEY' | translate }}</mat-label>
-                <input matInput formControlName="fieldKey" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" style="max-width:140px">
-                <mat-label>{{ 'WORKFLOWS.FIELD_TYPE' | translate }}</mat-label>
-                <mat-select formControlName="fieldType">
-                  @for (ft of fieldTypes; track ft.value) {
-                    <mat-option [value]="ft.value">{{ ft.label }}</mat-option>
+            </div>
+          }
+        } @else {
+          @for (fg of fieldsArray.controls; track $index; let i = $index) {
+            <div class="mb-3 p-3 border rounded" [formGroup]="$any(fg)">
+              <div class="field-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ 'WORKFLOWS.FIELD_LABEL' | translate }}</mat-label>
+                  <input matInput formControlName="label" />
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ 'WORKFLOWS.FIELD_KEY' | translate }}</mat-label>
+                  <input matInput formControlName="fieldKey" />
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="max-width:140px">
+                  <mat-label>{{ 'WORKFLOWS.FIELD_TYPE' | translate }}</mat-label>
+                  <mat-select formControlName="fieldType">
+                    @for (ft of fieldTypes; track ft.value) {
+                      <mat-option [value]="ft.value">{{ ft.label }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+                <mat-checkbox formControlName="isRequired" class="mt-3">
+                  {{ 'WORKFLOWS.REQUIRED' | translate }}
+                </mat-checkbox>
+                <button mat-icon-button color="warn" (click)="removeField(i)" class="mt-1">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+
+              <!-- Select options (shown only when type = Select = 3) -->
+              @if ($any(fg).get('fieldType').value === 3) {
+                <div formArrayName="selectOptions" class="mt-2 border-t pt-2">
+                  <p class="text-xs text-gray-500 mb-2 font-medium">{{ 'WORKFLOWS.SELECT_OPTIONS' | translate }}</p>
+                  @for (opt of getSelectOptionsArray($any(fg)).controls; track $index; let oi = $index) {
+                    <div class="flex gap-1 mb-1 items-center">
+                      <mat-form-field appearance="outline" class="flex-1" style="max-width:280px;">
+                        <mat-label>{{ 'WORKFLOWS.OPTION' | translate }} {{ oi + 1 }}</mat-label>
+                        <input matInput [formControlName]="oi" />
+                      </mat-form-field>
+                      <button mat-icon-button type="button" color="warn" (click)="removeSelectOption($any(fg), oi)">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
                   }
-                </mat-select>
+                  <button mat-stroked-button type="button" class="mt-1" (click)="addSelectOption($any(fg))">
+                    <mat-icon>add</mat-icon>
+                    {{ 'WORKFLOWS.ADD_OPTION' | translate }}
+                  </button>
+                </div>
+              }
+            </div>
+          }
+          <button mat-stroked-button (click)="addField()">
+            <mat-icon>add</mat-icon>
+            {{ 'WORKFLOWS.ADD_FIELD' | translate }}
+          </button>
+        }
+      </div>
+    </mat-tab>
+
+    <!-- Tab 4: Checklist (no aplica a estados finales) -->
+    @if (!isFinalState) {
+      <mat-tab [label]="'WORKFLOWS.TAB_CHECKLIST' | translate">
+        <div class="tab-content">
+          @for (cg of checklistArray.controls; track $index; let i = $index) {
+            <div class="checklist-row mb-2" [formGroup]="$any(cg)">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'WORKFLOWS.CHECKLIST_TITLE' | translate }}</mat-label>
+                <input matInput formControlName="title" />
               </mat-form-field>
-              <mat-checkbox formControlName="isRequired" class="mt-3">
+              <mat-checkbox formControlName="isRequired">
                 {{ 'WORKFLOWS.REQUIRED' | translate }}
               </mat-checkbox>
-              <button mat-icon-button color="warn" (click)="removeField(i)" class="mt-1">
+              <button mat-icon-button color="warn" (click)="removeChecklistItem(i)">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
-
-            <!-- Select options (shown only when type = Select = 3) -->
-            @if ($any(fg).get('fieldType').value === 3) {
-              <div formArrayName="selectOptions" class="mt-2 border-t pt-2">
-                <p class="text-xs text-gray-500 mb-2 font-medium">{{ 'WORKFLOWS.SELECT_OPTIONS' | translate }}</p>
-                @for (opt of getSelectOptionsArray($any(fg)).controls; track $index; let oi = $index) {
-                  <div class="flex gap-1 mb-1 items-center">
-                    <mat-form-field appearance="outline" class="flex-1" style="max-width:280px;">
-                      <mat-label>{{ 'WORKFLOWS.OPTION' | translate }} {{ oi + 1 }}</mat-label>
-                      <input matInput [formControlName]="oi" />
-                    </mat-form-field>
-                    <button mat-icon-button type="button" color="warn" (click)="removeSelectOption($any(fg), oi)">
-                      <mat-icon>close</mat-icon>
-                    </button>
-                  </div>
-                }
-                <button mat-stroked-button type="button" class="mt-1" (click)="addSelectOption($any(fg))">
-                  <mat-icon>add</mat-icon>
-                  {{ 'WORKFLOWS.ADD_OPTION' | translate }}
-                </button>
-              </div>
-            }
-          </div>
-        }
-        <button mat-stroked-button (click)="addField()">
-          <mat-icon>add</mat-icon>
-          {{ 'WORKFLOWS.ADD_FIELD' | translate }}
-        </button>
-      </div>
-    </mat-tab>
-
-    <!-- Tab 4: Checklist -->
-    <mat-tab [label]="'WORKFLOWS.TAB_CHECKLIST' | translate">
-      <div class="tab-content">
-        @for (cg of checklistArray.controls; track $index; let i = $index) {
-          <div class="checklist-row mb-2" [formGroup]="$any(cg)">
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'WORKFLOWS.CHECKLIST_TITLE' | translate }}</mat-label>
-              <input matInput formControlName="title" />
-            </mat-form-field>
-            <mat-checkbox formControlName="isRequired">
-              {{ 'WORKFLOWS.REQUIRED' | translate }}
-            </mat-checkbox>
-            <button mat-icon-button color="warn" (click)="removeChecklistItem(i)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        }
-        <button mat-stroked-button (click)="addChecklistItem()">
-          <mat-icon>add</mat-icon>
-          {{ 'WORKFLOWS.ADD_CHECKLIST' | translate }}
-        </button>
-      </div>
-    </mat-tab>
+          }
+          <button mat-stroked-button (click)="addChecklistItem()">
+            <mat-icon>add</mat-icon>
+            {{ 'WORKFLOWS.ADD_CHECKLIST' | translate }}
+          </button>
+        </div>
+      </mat-tab>
+    }
 
   </mat-tab-group>
 </mat-dialog-content>

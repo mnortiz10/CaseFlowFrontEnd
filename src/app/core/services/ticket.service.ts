@@ -19,6 +19,7 @@ export interface TicketListItemDto {
   currentStateName: string;
   subState: TicketSubState;
   stateEnteredAt: string;
+  assignedToUserId: number | null;
   assignedToName: string | null;
   createdByName: string;
   createdAt: string;
@@ -93,13 +94,21 @@ export interface TicketDto {
   completedStates: TicketStateDataDto[];
 }
 
-export interface TicketHistoryDto {
-  id: number;
-  fromStateName: string;
-  toStateName: string;
+export interface TicketFieldChangeDto {
+  fieldLabel: string;
+  oldValue: string | null;
+  newValue: string | null;
+  isBoolean: boolean;
+}
+
+export interface TicketActivityDto {
+  type: 'Transition' | 'Save';
+  stateName: string;
+  toStateName: string | null;
   comment: string | null;
   changedByName: string;
   changedAt: string;
+  changes: TicketFieldChangeDto[];
 }
 
 export interface PagedResult<T> {
@@ -178,7 +187,7 @@ export class TicketService {
     return this.http.put<TicketDto>(`${this.base}/${id}/assign`, { assignedToUserId });
   }
 
-  getHistory(id: number): Observable<TicketHistoryDto[]> {
-    return this.http.get<TicketHistoryDto[]>(`${this.base}/${id}/history`);
+  getActivity(id: number): Observable<TicketActivityDto[]> {
+    return this.http.get<TicketActivityDto[]>(`${this.base}/${id}/activity`);
   }
 }

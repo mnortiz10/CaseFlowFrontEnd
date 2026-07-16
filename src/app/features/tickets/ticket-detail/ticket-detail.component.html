@@ -1,28 +1,36 @@
-<div class="p-6">
+<div class="p-4">
   @if (loading) {
     <div class="flex justify-center py-12">
       <mat-spinner diameter="48"></mat-spinner>
     </div>
   } @else if (ticket) {
     <!-- Header -->
-    <div class="mb-6 flex items-start gap-3">
+    <div class="mb-3 flex items-start gap-2">
       <button mat-icon-button (click)="back()">
         <mat-icon>arrow_back</mat-icon>
       </button>
-      <div class="flex-1">
-        <div class="flex items-center gap-3 flex-wrap">
-          <span class="font-mono text-lg text-blue-600 font-bold">{{ ticket.ticketNumber }}</span>
-          <span
-            class="w-3 h-3 rounded-full"
-            [class]="getSubStateClass(ticket.subState)"
-            [matTooltip]="getSubStateLabel(ticket.subState)">
-          </span>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="font-mono text-sm text-blue-600 font-bold">{{ ticket.ticketNumber }}</span>
+          @if (isCurrentStateFinal) {
+            <span class="w-2.5 h-2.5 rounded-full" style="background:#8b5cf6" [matTooltip]="'TICKETS.FINALIZED' | translate"></span>
+          } @else {
+            <span
+              class="w-2.5 h-2.5 rounded-full"
+              [class]="getSubStateClass(ticket.subState)"
+              [matTooltip]="getSubStateLabel(ticket.subState)">
+            </span>
+          }
           <mat-chip>{{ ticket.currentStateName }}</mat-chip>
-          <span class="text-sm text-gray-500">{{ ticket.ticketTypeName }}</span>
+          <span class="text-xs text-gray-400">{{ ticket.ticketTypeName }}</span>
         </div>
-        <h1 class="text-2xl font-bold mt-1">{{ ticket.title }}</h1>
-        <p class="text-gray-500 mt-1">{{ ticket.description }}</p>
-        <div class="flex gap-4 text-sm text-gray-400 mt-2">
+        <div class="flex items-baseline gap-2 mt-0.5">
+          <h1 class="text-lg font-bold m-0 truncate">{{ ticket.title }}</h1>
+          @if (ticket.description) {
+            <span class="text-sm text-gray-500 truncate">— {{ ticket.description }}</span>
+          }
+        </div>
+        <div class="flex gap-3 text-xs text-gray-400 mt-0.5 flex-wrap">
           <span>{{ 'TICKETS.CREATED_BY' | translate }}: {{ ticket.createdByName }}</span>
           @if (ticket.assignedToName) {
             <span>{{ 'TICKETS.ASSIGNED_TO' | translate }}: {{ ticket.assignedToName }}</span>
@@ -33,8 +41,8 @@
     </div>
 
     <!-- Barra de progreso del workflow -->
-    <mat-card class="mb-6">
-      <mat-card-content class="py-4">
+    <mat-card class="mb-3">
+      <mat-card-content class="py-2">
         <div class="flex items-center overflow-x-auto gap-0">
           @for (state of workflowStates; track state.id; let last = $last) {
             <div class="flex items-center flex-shrink-0">
@@ -42,7 +50,7 @@
                 [class.cursor-pointer]="isCompletedState(state.id)"
                 [matTooltip]="isCompletedState(state.id) ? 'Ver datos de ' + state.name : ''"
                 (click)="onStateClick(state.id)">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all"
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all"
                   [class.bg-blue-600]="state.id === ticket.currentStateId"
                   [class.border-blue-600]="state.id === ticket.currentStateId"
                   [class.text-white]="state.id === ticket.currentStateId || isCompletedState(state.id)"
@@ -53,12 +61,12 @@
                   [class.border-gray-300]="!isCompletedState(state.id) && state.id !== ticket.currentStateId"
                   [class.text-gray-400]="!isCompletedState(state.id) && state.id !== ticket.currentStateId">
                   @if (isCompletedState(state.id)) {
-                    <mat-icon class="text-base leading-none">check</mat-icon>
+                    <mat-icon class="text-sm leading-none">check</mat-icon>
                   } @else {
                     {{ $index + 1 }}
                   }
                 </div>
-                <span class="text-xs mt-1 text-center max-w-20 leading-tight"
+                <span class="text-xs mt-0.5 text-center max-w-20 leading-tight"
                   [class.font-bold]="state.id === ticket.currentStateId"
                   [class.text-blue-600]="state.id === ticket.currentStateId"
                   [class.text-green-600]="isCompletedState(state.id)"
@@ -101,7 +109,9 @@
                           <input matInput [formControlName]="'field_' + f.fieldId"
                             [type]="f.fieldType === 4 ? 'number' : 'text'"
                             />
-
+                          @if (stateForm.get('field_' + f.fieldId)?.invalid && stateForm.get('field_' + f.fieldId)?.touched) {
+                            <mat-error>{{ 'TICKETS.FIELD_REQUIRED' | translate }}</mat-error>
+                          }
                         </mat-form-field>
                       }
                       @if (isTextArea(f)) {
@@ -109,29 +119,38 @@
                           <mat-label>{{ f.label }}{{ f.isRequired ? ' *' : '' }}</mat-label>
                           <textarea matInput [formControlName]="'field_' + f.fieldId" rows="3"
                             ></textarea>
+                          @if (stateForm.get('field_' + f.fieldId)?.invalid && stateForm.get('field_' + f.fieldId)?.touched) {
+                            <mat-error>{{ 'TICKETS.FIELD_REQUIRED' | translate }}</mat-error>
+                          }
                         </mat-form-field>
                       }
                       @if (isCheckbox(f)) {
                         <mat-checkbox [formControlName]="'field_' + f.fieldId">
-                          {{ f.label }}
+                          {{ f.label }}{{ f.isRequired ? ' *' : '' }}
                         </mat-checkbox>
                       }
                       @if (isSelect(f)) {
                         <mat-form-field appearance="outline" class="w-full">
-                          <mat-label>{{ f.label }}</mat-label>
+                          <mat-label>{{ f.label }}{{ f.isRequired ? ' *' : '' }}</mat-label>
                           <mat-select [formControlName]="'field_' + f.fieldId">
                             @for (opt of getSelectOptions(f); track opt) {
                               <mat-option [value]="opt">{{ opt }}</mat-option>
                             }
                           </mat-select>
+                          @if (stateForm.get('field_' + f.fieldId)?.invalid && stateForm.get('field_' + f.fieldId)?.touched) {
+                            <mat-error>{{ 'TICKETS.FIELD_REQUIRED' | translate }}</mat-error>
+                          }
                         </mat-form-field>
                       }
                       @if (isDate(f)) {
                         <mat-form-field appearance="outline" class="w-full">
-                          <mat-label>{{ f.label }}</mat-label>
+                          <mat-label>{{ f.label }}{{ f.isRequired ? ' *' : '' }}</mat-label>
                           <input matInput [matDatepicker]="dp" [formControlName]="'field_' + f.fieldId" />
                           <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
                           <mat-datepicker #dp></mat-datepicker>
+                          @if (stateForm.get('field_' + f.fieldId)?.invalid && stateForm.get('field_' + f.fieldId)?.touched) {
+                            <mat-error>{{ 'TICKETS.FIELD_REQUIRED' | translate }}</mat-error>
+                          }
                         </mat-form-field>
                       }
                     </div>
@@ -171,117 +190,165 @@
               </button>
 
               <!-- 2. Avanzar al siguiente estado -->
-              @if (ticket.nextStateId && !ticket.currentStateName.toLowerCase().includes('final')) {
-                <button mat-stroked-button color="primary" [disabled]="saving || transitioning" (click)="advance()">
+              @if (ticket.nextStateId && !isCurrentStateFinal) {
+                <button mat-stroked-button [color]="isNextStateFinal ? 'accent' : 'primary'"
+                  [disabled]="saving || transitioning || stateForm.invalid" (click)="advance()">
                   <mat-spinner *ngIf="transitioning" diameter="20"></mat-spinner>
-                  <mat-icon *ngIf="!transitioning">arrow_forward</mat-icon>
-                  <span *ngIf="!transitioning">{{ 'TICKETS.ADVANCE' | translate }}: {{ ticket.nextStateName }}</span>
+                  <mat-icon *ngIf="!transitioning">{{ isNextStateFinal ? 'task_alt' : 'arrow_forward' }}</mat-icon>
+                  <span *ngIf="!transitioning">
+                    @if (isNextStateFinal) {
+                      {{ 'TICKETS.FINALIZE_TICKET' | translate }}
+                    } @else {
+                      {{ 'TICKETS.ADVANCE' | translate }}: {{ ticket.nextStateName }}
+                    }
+                  </span>
                 </button>
               }
 
               @if (ticket.canTransitionToFinal && ticket.finalStateId && ticket.finalStateId !== ticket.currentStateId) {
-                <button mat-stroked-button color="accent" [disabled]="saving || transitioning" (click)="goToFinal()">
-                  <mat-icon>done_all</mat-icon>
-                  {{ 'TICKETS.GO_FINAL' | translate }}
+                <button mat-stroked-button color="accent" [disabled]="saving || transitioning || stateForm.invalid" (click)="goToFinal()">
+                  <mat-icon>task_alt</mat-icon>
+                  {{ 'TICKETS.FINALIZE_TICKET' | translate }}
                 </button>
               }
 
-              <!-- 3. Extender tiempo -->
-              <button mat-stroked-button color="warn" [disabled]="saving" (click)="openExtendTime()">
-                <mat-icon>schedule</mat-icon>
-                {{ 'TICKETS.EXTEND_TIME' | translate }}
-              </button>
+              @if (stateForm.invalid && (stateForm.touched || stateForm.dirty)) {
+                <span class="text-sm text-red-500">{{ 'TICKETS.TOAST.REQUIRED_FIELDS' | translate }}</span>
+              }
+
+              <!-- 3. Extender tiempo (no aplica a estados finales) -->
+              @if (!isCurrentStateFinal && auth.hasPermission('tickets.extend_time')) {
+                <button mat-stroked-button color="warn" [disabled]="saving" (click)="openExtendTime()">
+                  <mat-icon>schedule</mat-icon>
+                  {{ 'TICKETS.EXTEND_TIME' | translate }}
+                </button>
+              }
             </div>
           </mat-card-content>
         </mat-card>
       </div>
 
-      <!-- Panel derecho: Info + sub-estado + asignación -->
+      <!-- Panel derecho: sub-estado -->
       <div class="flex flex-col gap-4">
 
-        <!-- Sub-estado y tiempos -->
+        <!-- Sub-estado y tiempos / Finalizado -->
         <mat-card>
           <mat-card-content class="py-4">
-            <div class="flex items-center gap-2 mb-3">
-              <span class="w-4 h-4 rounded-full" [class]="getSubStateClass(ticket.subState)"></span>
-              <span class="font-semibold">{{ getSubStateLabel(ticket.subState) }}</span>
-            </div>
-            <div class="text-sm text-gray-500 space-y-1">
-              <div>{{ 'TICKETS.STATE_ENTERED' | translate }}: {{ ticket.stateEnteredAt | date:'dd/MM/yyyy HH:mm' }}</div>
-              @if (ticket.subStateOverrideUntil) {
-                <div class="text-blue-500">
-                  {{ 'TICKETS.OVERRIDE_UNTIL' | translate }}: {{ ticket.subStateOverrideUntil | date:'dd/MM/yyyy HH:mm' }}
+            @if (isCurrentStateFinal) {
+              <div class="flex items-center gap-2 mb-3">
+                <mat-icon style="color:#8b5cf6">task_alt</mat-icon>
+                <span class="font-semibold" style="color:#8b5cf6">{{ 'TICKETS.FINALIZED' | translate }}</span>
+              </div>
+              <div class="text-sm text-gray-500">
+                {{ 'TICKETS.FINALIZED_ON' | translate }}: {{ ticket.stateEnteredAt | date:'dd/MM/yyyy HH:mm' }}
+              </div>
+            } @else {
+              <div class="flex items-center gap-2 mb-3">
+                <span class="w-4 h-4 rounded-full" [class]="getSubStateClass(ticket.subState)"></span>
+                <span class="font-semibold">{{ getSubStateLabel(ticket.subState) }}</span>
+              </div>
+              @if (stateTimeSummary) {
+                <div class="text-sm mb-2"
+                  [class.text-red-600]="ticket.subState === TicketSubState.Red"
+                  [class.text-gray-600]="ticket.subState !== TicketSubState.Red">
+                  {{ stateTimeSummary }}
                 </div>
               }
-            </div>
+              <div class="text-sm text-gray-500 space-y-1">
+                <div>{{ 'TICKETS.STATE_ENTERED' | translate }}: {{ ticket.stateEnteredAt | date:'dd/MM/yyyy HH:mm' }}</div>
+                @if (ticket.subStateOverrideUntil) {
+                  <div class="text-blue-500">
+                    {{ 'TICKETS.OVERRIDE_UNTIL' | translate }}: {{ ticket.subStateOverrideUntil | date:'dd/MM/yyyy HH:mm' }}
+                  </div>
+                }
+              </div>
+            }
           </mat-card-content>
         </mat-card>
 
-        <!-- Asignación -->
+        <!-- Actividad reciente -->
         <mat-card>
-          <mat-card-header>
-            <mat-card-title class="text-sm">{{ 'TICKETS.ASSIGN_TO' | translate }}</mat-card-title>
-          </mat-card-header>
-          <mat-card-content class="py-3">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-icon matPrefix>person</mat-icon>
-              <mat-select [(ngModel)]="selectedAssigneeId">
-                <mat-option [value]="null">{{ 'TICKETS.UNASSIGNED' | translate }}</mat-option>
-                @for (u of users; track u.id) {
-                  <mat-option [value]="u.id">{{ u.firstName }} {{ u.lastName }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-            <button mat-flat-button color="primary" class="w-full"
-              [disabled]="reassigning"
-              (click)="reassign()">
-              @if (reassigning) {
-                <mat-spinner diameter="18"></mat-spinner>
-              } @else {
-                <mat-icon>check</mat-icon>
-                {{ 'TICKETS.SAVE_ASSIGN' | translate }}
-              }
-            </button>
+          <mat-card-content class="py-4">
+            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              {{ 'TICKETS.RECENT_ACTIVITY' | translate }}
+            </h3>
+            @if (activity.length > 0) {
+              <div class="flex items-start gap-2 text-sm">
+                <mat-icon class="text-base leading-none mt-0.5"
+                  [class.text-blue-600]="activity[0].type === 'Transition'"
+                  [class.text-gray-500]="activity[0].type === 'Save'">
+                  {{ activity[0].type === 'Transition' ? 'arrow_forward' : 'save' }}
+                </mat-icon>
+                <div class="flex-1 min-w-0">
+                  <div>
+                    <strong>{{ activity[0].changedByName }}</strong>
+                    {{ (activity[0].type === 'Transition' ? 'TICKETS.ACTIVITY_TRANSITION' : 'TICKETS.ACTIVITY_SAVE') | translate }}
+                    <strong>{{ activity[0].type === 'Transition' ? activity[0].toStateName : activity[0].stateName }}</strong>
+                  </div>
+                  <div class="text-xs text-gray-400">{{ activity[0].changedAt | date:'dd/MM/yyyy HH:mm' }}</div>
+                </div>
+              </div>
+              <button mat-button color="primary" class="mt-2 -ml-2" (click)="scrollToHistory()">
+                {{ 'TICKETS.VIEW_FULL_HISTORY' | translate }}
+                <mat-icon class="text-base leading-none align-middle">arrow_downward</mat-icon>
+              </button>
+            } @else {
+              <p class="text-sm text-gray-400">{{ 'TICKETS.HISTORY_EMPTY' | translate }}</p>
+            }
           </mat-card-content>
         </mat-card>
 
       </div>
     </div>
 
-    <!-- Historial -->
-    <mat-card class="mt-6">
+    <!-- Historial de cambios -->
+    <mat-card class="mt-6" id="change-history">
       <mat-card-header>
         <mat-card-title>{{ 'TICKETS.HISTORY' | translate }}</mat-card-title>
-        <button mat-button (click)="loadHistory()" class="ml-auto">
-          <mat-icon>refresh</mat-icon>
-        </button>
       </mat-card-header>
       <mat-card-content>
-        @if (history.length > 0) {
-          <table mat-table [dataSource]="history" class="w-full">
-            <ng-container matColumnDef="date">
-              <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DATE' | translate }}</th>
-              <td mat-cell *matCellDef="let h" class="text-sm">{{ h.changedAt | date:'dd/MM/yy HH:mm' }}</td>
-            </ng-container>
-            <ng-container matColumnDef="from">
-              <th mat-header-cell *matHeaderCellDef>{{ 'TICKETS.FROM_STATE' | translate }}</th>
-              <td mat-cell *matCellDef="let h"><mat-chip>{{ h.fromStateName }}</mat-chip></td>
-            </ng-container>
-            <ng-container matColumnDef="to">
-              <th mat-header-cell *matHeaderCellDef>{{ 'TICKETS.TO_STATE' | translate }}</th>
-              <td mat-cell *matCellDef="let h"><mat-chip color="primary" highlighted>{{ h.toStateName }}</mat-chip></td>
-            </ng-container>
-            <ng-container matColumnDef="comment">
-              <th mat-header-cell *matHeaderCellDef>{{ 'TICKETS.COMMENT' | translate }}</th>
-              <td mat-cell *matCellDef="let h" class="text-sm text-gray-500">{{ h.comment ?? '—' }}</td>
-            </ng-container>
-            <ng-container matColumnDef="by">
-              <th mat-header-cell *matHeaderCellDef>{{ 'TICKETS.CHANGED_BY' | translate }}</th>
-              <td mat-cell *matCellDef="let h" class="text-sm">{{ h.changedByName }}</td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="historyColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: historyColumns;"></tr>
-          </table>
+        @if (activity.length > 0) {
+          <div class="space-y-4">
+            @for (a of activity; track $index) {
+              <div class="flex gap-3 pb-4 border-b border-gray-100 last:border-0 last:pb-0">
+                <mat-icon class="text-base leading-none mt-0.5"
+                  [class.text-blue-600]="a.type === 'Transition'"
+                  [class.text-gray-500]="a.type === 'Save'">
+                  {{ a.type === 'Transition' ? 'arrow_forward' : 'save' }}
+                </mat-icon>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm flex items-center gap-2 flex-wrap">
+                    <strong>{{ a.changedByName }}</strong>
+                    @if (a.type === 'Transition') {
+                      <span>{{ 'TICKETS.ACTIVITY_TRANSITION' | translate }}</span>
+                      <mat-chip>{{ a.stateName }}</mat-chip>
+                      <mat-icon class="text-sm leading-none">arrow_forward</mat-icon>
+                      <mat-chip color="primary" highlighted>{{ a.toStateName }}</mat-chip>
+                    } @else {
+                      <span>{{ 'TICKETS.ACTIVITY_SAVE' | translate }}</span>
+                      <mat-chip>{{ a.stateName }}</mat-chip>
+                    }
+                    <span class="text-xs text-gray-400">{{ a.changedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                  </div>
+                  @if (a.comment) {
+                    <p class="text-xs italic text-gray-400 mt-1">"{{ a.comment }}"</p>
+                  }
+                  @if (a.changes.length > 0) {
+                    <div class="mt-2 space-y-1 bg-gray-50 rounded-lg p-2">
+                      @for (c of a.changes; track c.fieldLabel) {
+                        <div class="text-xs flex items-center gap-1 flex-wrap">
+                          <span class="font-medium text-gray-600">{{ c.fieldLabel }}:</span>
+                          <span class="text-gray-400">{{ formatChangeValue(c.oldValue, c.isBoolean) }}</span>
+                          <mat-icon class="text-sm leading-none">arrow_forward</mat-icon>
+                          <span class="text-gray-800">{{ formatChangeValue(c.newValue, c.isBoolean) }}</span>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
         } @else {
           <p class="text-center py-6 text-gray-400">{{ 'TICKETS.HISTORY_EMPTY' | translate }}</p>
         }

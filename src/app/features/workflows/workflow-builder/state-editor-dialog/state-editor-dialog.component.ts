@@ -87,6 +87,43 @@ export class StateEditorDialogComponent implements OnInit {
       s.formFields.forEach((f) => this.fieldsArray.push(this.makeFieldGroup(f)));
       s.checklistItems.forEach((c) => this.checklistArray.push(this.makeChecklistGroup(c)));
     }
+
+    if (this.infoForm.get('isFinal')!.value) {
+      this.enforceFinalStateConstraints();
+    }
+    this.infoForm.get('isFinal')!.valueChanges.subscribe((isFinal) => {
+      if (isFinal) this.enforceFinalStateConstraints();
+    });
+  }
+
+  get isFinalState(): boolean { return !!this.infoForm.get('isFinal')!.value; }
+
+  private enforceFinalStateConstraints(): void {
+    this.checklistArray.clear();
+    if (this.fieldsArray.length > 1) {
+      const first = this.fieldsArray.at(0) as FormGroup;
+      this.fieldsArray.clear();
+      this.fieldsArray.push(first);
+    }
+    if (this.fieldsArray.length === 1) {
+      (this.fieldsArray.at(0) as FormGroup).patchValue(
+        { fieldType: FormFieldType.TextArea, isRequired: false },
+        { emitEvent: false },
+      );
+    }
+  }
+
+  toggleFinalDescriptionField(checked: boolean): void {
+    this.fieldsArray.clear();
+    if (checked) {
+      this.fieldsArray.push(this.makeFieldGroup({
+        label: 'Descripción',
+        fieldKey: 'descripcion_final',
+        fieldType: FormFieldType.TextArea,
+        isRequired: false,
+        order: 1,
+      }));
+    }
   }
 
   makeFieldGroup(f?: Partial<{ id: number; label: string; fieldKey: string; fieldType: FormFieldType; isRequired: boolean; options: string | null; placeholder: string | null; order: number }>): FormGroup {
@@ -134,8 +171,9 @@ export class StateEditorDialogComponent implements OnInit {
 
   async save(): Promise<void> {
     this.infoForm.markAllAsTouched();
-    this.timesForm.markAllAsTouched();
-    if (this.infoForm.invalid || this.timesForm.invalid) return;
+    const isFinal = !!this.infoForm.get('isFinal')!.value;
+    if (!isFinal) this.timesForm.markAllAsTouched();
+    if (this.infoForm.invalid || (!isFinal && this.timesForm.invalid)) return;
 
     this.saving = true;
     const iv = this.infoForm.value;
@@ -147,8 +185,8 @@ export class StateEditorDialogComponent implements OnInit {
       isInitial: iv.isInitial!,
       isFinal: iv.isFinal!,
       canTransitionToFinal: iv.canTransitionToFinal!,
-      yellowThresholdHours: tv.yellowThresholdHours!,
-      redThresholdHours: tv.redThresholdHours!,
+      yellowThresholdHours: isFinal ? 0 : tv.yellowThresholdHours!,
+      redThresholdHours: isFinal ? 0 : tv.redThresholdHours!,
     };
 
     try {

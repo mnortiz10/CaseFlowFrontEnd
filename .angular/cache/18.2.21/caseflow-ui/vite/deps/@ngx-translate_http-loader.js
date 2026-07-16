@@ -1,7 +1,8 @@
 import {
   TranslateLoader,
   mergeDeep
-} from "./chunk-M3QRLXGA.js";
+} from "./chunk-HBFVFRUY.js";
+import "./chunk-WRCLOBHU.js";
 import {
   HttpBackend,
   HttpClient

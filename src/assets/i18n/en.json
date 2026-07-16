@@ -184,6 +184,12 @@
       "SLUG_HINT": "The slug cannot be changed once created"
     },
     "SAVE": "Save changes",
+    "ADVANCED": {
+      "TITLE": "Advanced options",
+      "DESC": "Additional settings for system behavior.",
+      "PROMPT_EXTEND_TIME": "Ask to extend the due date when saving a state",
+      "PROMPT_EXTEND_TIME_HINT": "When saving or advancing a ticket's state, you'll be offered the option to extend the due date (24h by default, editable). You can choose not to add time and keep the current due date."
+    },
     "COMING_SOON_TITLE": "More settings coming soon",
     "COMING_SOON_DESC": "Notifications, integrations, billing and more.",
     "TOAST": {

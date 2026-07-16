@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ 'TICKETS.EXTEND_TIME' | translate }}</h2>
+<h2 mat-dialog-title>{{ data.title ?? ('TICKETS.EXTEND_TIME' | translate) }}</h2>
 
 <mat-dialog-content>
   <form [formGroup]="form" class="flex flex-col gap-1 pt-1">
@@ -16,7 +16,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button [mat-dialog-close]="null">{{ 'COMMON.CANCEL' | translate }}</button>
+  <button mat-button [mat-dialog-close]="null">{{ data.cancelLabel ?? ('COMMON.CANCEL' | translate) }}</button>
   <button mat-flat-button color="primary" [disabled]="saving" (click)="save()">
     @if (saving) {
       <mat-spinner diameter="20"></mat-spinner>

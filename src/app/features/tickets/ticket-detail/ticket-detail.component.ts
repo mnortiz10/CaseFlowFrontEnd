@@ -1,7 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { interval } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -16,20 +18,20 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
   TicketService,
   TicketDto,
-  TicketHistoryDto,
+  TicketActivityDto,
   TicketSubState,
   TicketFieldValueDto,
   TicketStateDataDto,
   SaveStateDto,
 } from '../../../core/services/ticket.service';
 import { WorkflowService, WorkflowStateDto, FormFieldType } from '../../../core/services/workflow.service';
-import { UserService, UserDto } from '../../../core/services/user.service';
+import { TenantService } from '../../../core/services/tenant.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { ExtendTimeDialogComponent } from '../extend-time-dialog/extend-time-dialog.component';
 import { StateDetailDialogComponent } from '../state-detail-dialog/state-detail-dialog.component';
 
@@ -37,10 +39,10 @@ import { StateDetailDialogComponent } from '../state-detail-dialog/state-detail-
   selector: 'app-ticket-detail',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, FormsModule, MatButtonModule, MatIconModule,
+    CommonModule, ReactiveFormsModule, MatButtonModule, MatIconModule,
     MatCardModule, MatChipsModule, MatTabsModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatCheckboxModule, MatDialogModule, MatProgressSpinnerModule,
-    MatTableModule, MatTooltipModule, MatDatepickerModule, MatNativeDateModule, TranslatePipe,
+    MatTooltipModule, MatDatepickerModule, MatNativeDateModule, TranslatePipe,
   ],
   templateUrl: './ticket-detail.component.html',
   styleUrls: ['./ticket-detail.component.scss'],
@@ -50,30 +52,31 @@ export class TicketDetailComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly service = inject(TicketService);
   private readonly workflowService = inject(WorkflowService);
-  private readonly userService = inject(UserService);
+  private readonly tenantService = inject(TenantService);
+  readonly auth = inject(AuthService);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
   private readonly fb = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
 
   ticket: TicketDto | null = null;
-  history: TicketHistoryDto[] = [];
+  activity: TicketActivityDto[] = [];
   workflowStates: WorkflowStateDto[] = [];
-  users: UserDto[] = [];
   loading = true;
   transitioning = false;
   saving = false;
-  reassigning = false;
-  selectedAssigneeId: number | null = null;
   stateForm: FormGroup = this.fb.group({});
-  historyColumns = ['date', 'from', 'to', 'comment', 'by'];
   TicketSubState = TicketSubState;
   FormFieldType = FormFieldType;
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.loadTicket(id);
-    this.userService.getAllActive().subscribe({ next: u => this.users = u });
+
+    // stateTimeSummary reads Date.now() on every render; nothing re-renders it on its own,
+    // so tick periodically to keep "llevás"/"quedan" fresh without a manual refresh.
+    interval(60_000).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
   loadTicket(id: number): void {
@@ -81,11 +84,11 @@ export class TicketDetailComponent implements OnInit {
     this.service.getById(id).subscribe({
       next: (t) => {
         this.ticket = t;
-        this.selectedAssigneeId = t.assignedToUserId;
         this.buildStateForm(t);
         this.workflowService.getById(t.workflowDefinitionId).subscribe({
           next: (wf) => { this.workflowStates = wf.states; },
         });
+        this.loadActivity();
         this.loading = false;
       },
       error: () => { this.loading = false; this.router.navigate(['/tickets']); },
@@ -101,10 +104,13 @@ export class TicketDetailComponent implements OnInit {
       } else if (f.fieldType === FormFieldType.Checkbox) {
         val = f.value === 'true';
       }
-      controls[`field_${f.fieldId}`] = [val];
+      const validators = f.isRequired
+        ? [f.fieldType === FormFieldType.Checkbox ? Validators.requiredTrue : Validators.required]
+        : [];
+      controls[`field_${f.fieldId}`] = [val, validators];
     });
     ticket.checklistValues.forEach((c) => {
-      controls[`check_${c.checklistItemId}`] = [c.isChecked];
+      controls[`check_${c.checklistItemId}`] = [c.isChecked, c.isRequired ? [Validators.requiredTrue] : []];
     });
     controls['comment'] = [ticket.currentStateNote ?? ''];
     this.stateForm = this.fb.group(controls);
@@ -145,6 +151,8 @@ export class TicketDetailComponent implements OnInit {
         this.buildStateForm(updated);
         this.saving = false;
         this.snackBar.open(this.translate.instant('TICKETS.TOAST.SAVED'), 'OK', { duration: 2500 });
+        this.loadActivity();
+        this.maybePromptExtendTime(updated);
       },
       error: () => (this.saving = false),
     });
@@ -161,6 +169,11 @@ export class TicketDetailComponent implements OnInit {
   }
 
   private doTransition(toStateId: number): void {
+    if (this.stateForm.invalid) {
+      this.stateForm.markAllAsTouched();
+      this.snackBar.open(this.translate.instant('TICKETS.TOAST.REQUIRED_FIELDS'), 'OK', { duration: 3500 });
+      return;
+    }
     this.transitioning = true;
     const { fieldValues, checklistValues } = this.buildPayload();
     const comment = this.stateForm.value['comment'] || null;
@@ -176,6 +189,7 @@ export class TicketDetailComponent implements OnInit {
         this.buildStateForm(updated);
         this.transitioning = false;
         this.snackBar.open(this.translate.instant('TICKETS.TOAST.TRANSITIONED'), 'OK', { duration: 3000 });
+        this.loadActivity();
       },
       error: () => (this.transitioning = false),
     });
@@ -196,23 +210,53 @@ export class TicketDetailComponent implements OnInit {
       });
   }
 
-  reassign(): void {
-    if (!this.ticket) return;
-    this.reassigning = true;
-    this.service.reassign(this.ticket.id, this.selectedAssigneeId).subscribe({
-      next: updated => {
-        this.ticket = updated;
-        this.selectedAssigneeId = updated.assignedToUserId;
-        this.reassigning = false;
-        this.snackBar.open(this.translate.instant('TICKETS.TOAST.REASSIGNED'), 'OK', { duration: 2500 });
+  private maybePromptExtendTime(updated: TicketDto): void {
+    if (!this.auth.hasPermission('tickets.extend_time')) return;
+
+    const currentState = this.workflowStates.find((s) => s.id === updated.currentStateId);
+    if (currentState?.isFinal) return;
+
+    this.tenantService.getSettings().subscribe({
+      next: (settings) => {
+        if (!settings.promptExtendTimeOnStateSave) return;
+
+        this.dialog
+          .open(ExtendTimeDialogComponent, {
+            width: '420px',
+            data: {
+              ticketId: updated.id,
+              defaultHours: 24,
+              title: this.translate.instant('TICKETS.EXTEND_TIME_PROMPT_TITLE'),
+              cancelLabel: this.translate.instant('TICKETS.NO_EXTEND'),
+            },
+          })
+          .afterClosed()
+          .subscribe((extended) => {
+            if (extended) {
+              this.ticket = extended;
+              this.snackBar.open(this.translate.instant('TICKETS.TOAST.TIME_EXTENDED'), 'OK', { duration: 3000 });
+            }
+          });
       },
-      error: () => (this.reassigning = false),
     });
   }
 
-  loadHistory(): void {
+  loadActivity(): void {
     if (!this.ticket) return;
-    this.service.getHistory(this.ticket.id).subscribe({ next: (h) => (this.history = h) });
+    this.service.getActivity(this.ticket.id).subscribe({ next: (a) => (this.activity = a) });
+  }
+
+  scrollToHistory(): void {
+    document.getElementById('change-history')?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  formatChangeValue(v: string | null, isBoolean: boolean): string {
+    if (isBoolean) {
+      return v === 'true'
+        ? this.translate.instant('COMMON.YES')
+        : this.translate.instant('COMMON.NO');
+    }
+    return v ?? '—';
   }
 
   back(): void { this.router.navigate(['/tickets']); }
@@ -231,6 +275,69 @@ export class TicketDetailComponent implements OnInit {
 
   isCompletedState(stateId: number): boolean {
     return this.ticket?.completedStates?.some(s => s.stateId === stateId) ?? false;
+  }
+
+  private parseUtcDate(raw: string): Date {
+    // PostgreSQL sends microseconds (6 decimal places); JS Date only handles 3 (ms).
+    const cleaned = raw.replace(/(\.\d{3})\d+/, '$1');
+    return new Date(cleaned.endsWith('Z') ? cleaned : `${cleaned}Z`);
+  }
+
+  private formatHours(hours: number): string {
+    if (isNaN(hours) || hours < 0) return '—';
+    if (hours < 1) return `${Math.floor(hours * 60)}m`;
+    if (hours < 24) return `${Math.floor(hours)}h`;
+    const d = Math.floor(hours / 24);
+    const rem = Math.floor(hours % 24);
+    return rem > 0 ? `${d}d ${rem}h` : `${d}d`;
+  }
+
+  get stateTimeSummary(): string | null {
+    if (!this.ticket || this.isCurrentStateFinal) return null;
+    const state = this.workflowStates.find((s) => s.id === this.ticket!.currentStateId);
+    if (!state) return null;
+
+    const enteredAt = this.parseUtcDate(this.ticket.stateEnteredAt);
+    const effectiveStart = this.ticket.subStateOverrideUntil
+      ? this.parseUtcDate(this.ticket.subStateOverrideUntil)
+      : enteredAt;
+
+    // Clamp to 0: an override baseline in the future (extension not yet elapsed) or a clock
+    // skew must never surface as a negative elapsed/remaining figure.
+    const elapsedReal = Math.max(0, (Date.now() - enteredAt.getTime()) / 3_600_000);
+    const elapsedEffective = Math.max(0, (Date.now() - effectiveStart.getTime()) / 3_600_000);
+    const elapsed = this.formatHours(elapsedReal);
+
+    if (this.ticket.subState === TicketSubState.Red) {
+      const total = this.formatHours(state.redThresholdHours);
+      const overdue = this.formatHours(Math.max(0, elapsedEffective - state.redThresholdHours));
+      return this.translate.instant('TICKETS.TIME_OVERDUE_SUMMARY', { overdue, elapsed, total });
+    }
+
+    // Count down to whichever sub-state comes next: Green -> Yellow, Yellow -> Red.
+    const nextThreshold = this.ticket.subState === TicketSubState.Yellow
+      ? state.redThresholdHours
+      : state.yellowThresholdHours;
+    const nextLabel = this.getSubStateLabel(
+      this.ticket.subState === TicketSubState.Yellow ? TicketSubState.Red : TicketSubState.Yellow);
+
+    const remaining = this.formatHours(Math.max(0, nextThreshold - elapsedEffective));
+    const total = this.formatHours(nextThreshold);
+
+    return this.translate.instant('TICKETS.TIME_REMAINING_SUMMARY', { remaining, nextLabel, elapsed, total });
+  }
+
+  private isFinalStateId(stateId: number | null | undefined): boolean {
+    if (stateId == null) return false;
+    return this.workflowStates.find((s) => s.id === stateId)?.isFinal ?? false;
+  }
+
+  get isCurrentStateFinal(): boolean {
+    return !!this.ticket && this.isFinalStateId(this.ticket.currentStateId);
+  }
+
+  get isNextStateFinal(): boolean {
+    return !!this.ticket && this.isFinalStateId(this.ticket.nextStateId);
   }
 
   onStateClick(stateId: number): void {
