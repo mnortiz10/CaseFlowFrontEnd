@@ -19,6 +19,9 @@ export interface TicketListItemDto {
   currentStateName: string;
   subState: TicketSubState;
   stateEnteredAt: string;
+  subStateOverrideUntil: string | null;
+  redThresholdHours: number;
+  isCurrentStateFinal: boolean;
   assignedToUserId: number | null;
   assignedToName: string | null;
   createdByName: string;
@@ -63,6 +66,7 @@ export interface TicketStateDataDto {
   timeExtensions: TicketTimeExtensionDto[];
   fieldValues: TicketFieldValueDto[];
   checklistValues: TicketChecklistValueDto[];
+  comments: TicketCommentDto[];
 }
 
 export interface TicketDto {
@@ -92,6 +96,15 @@ export interface TicketDto {
   fieldValues: TicketFieldValueDto[];
   checklistValues: TicketChecklistValueDto[];
   completedStates: TicketStateDataDto[];
+  comments: TicketCommentDto[];
+}
+
+export interface TicketCommentDto {
+  workflowStateId: number;
+  stateName: string;
+  text: string;
+  createdByName: string;
+  createdAt: string;
 }
 
 export interface TicketFieldChangeDto {
@@ -144,6 +157,11 @@ export interface ExtendTimeDto {
   reason: string | null;
 }
 
+export interface UpdatePastStateDto {
+  fieldValues: { fieldId: number; value: string | null }[];
+  checklistValues: { checklistItemId: number; isChecked: boolean }[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class TicketService {
   private readonly http = inject(HttpClient);
@@ -152,7 +170,7 @@ export class TicketService {
   getAll(
     page: number, pageSize: number,
     title?: string, ticketNumber?: string,
-    ticketTypeId?: number, stateId?: number, subState?: number
+    ticketTypeId?: number, stateId?: number, subState?: number, assignedToUserId?: number
   ): Observable<PagedResult<TicketListItemDto>> {
     let params = new HttpParams().set('page', page).set('pageSize', pageSize);
     if (title)          params = params.set('title', title);
@@ -160,6 +178,7 @@ export class TicketService {
     if (ticketTypeId != null) params = params.set('ticketTypeId', ticketTypeId);
     if (stateId != null)      params = params.set('stateId', stateId);
     if (subState != null)     params = params.set('subState', subState);
+    if (assignedToUserId != null) params = params.set('assignedToUserId', assignedToUserId);
     return this.http.get<PagedResult<TicketListItemDto>>(this.base, { params });
   }
 
@@ -177,6 +196,10 @@ export class TicketService {
 
   saveState(id: number, dto: SaveStateDto): Observable<TicketDto> {
     return this.http.post<TicketDto>(`${this.base}/${id}/save-state`, dto);
+  }
+
+  updatePastState(id: number, stateId: number, dto: UpdatePastStateDto): Observable<TicketDto> {
+    return this.http.put<TicketDto>(`${this.base}/${id}/states/${stateId}`, dto);
   }
 
   extendTime(id: number, dto: ExtendTimeDto): Observable<TicketDto> {

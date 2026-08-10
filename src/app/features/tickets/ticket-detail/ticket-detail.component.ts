@@ -1,4 +1,4 @@
-import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { interval } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -34,6 +34,8 @@ import { TenantService } from '../../../core/services/tenant.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ExtendTimeDialogComponent } from '../extend-time-dialog/extend-time-dialog.component';
 import { StateDetailDialogComponent } from '../state-detail-dialog/state-detail-dialog.component';
+import { ApiDatePipe } from '../../../shared/pipes/api-date.pipe';
+import { parseApiDate } from '../../../core/utils/api-date';
 
 @Component({
   selector: 'app-ticket-detail',
@@ -42,7 +44,7 @@ import { StateDetailDialogComponent } from '../state-detail-dialog/state-detail-
     CommonModule, ReactiveFormsModule, MatButtonModule, MatIconModule,
     MatCardModule, MatChipsModule, MatTabsModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatCheckboxModule, MatDialogModule, MatProgressSpinnerModule,
-    MatTooltipModule, MatDatepickerModule, MatNativeDateModule, TranslatePipe,
+    MatTooltipModule, MatDatepickerModule, MatNativeDateModule, TranslatePipe, ApiDatePipe,
   ],
   templateUrl: './ticket-detail.component.html',
   styleUrls: ['./ticket-detail.component.scss'],
@@ -61,6 +63,7 @@ export class TicketDetailComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   ticket: TicketDto | null = null;
+  commentHistoryEnabled = true;
   activity: TicketActivityDto[] = [];
   workflowStates: WorkflowStateDto[] = [];
   loading = true;
@@ -70,13 +73,34 @@ export class TicketDetailComponent implements OnInit {
   TicketSubState = TicketSubState;
   FormFieldType = FormFieldType;
 
+  /**
+   * Clock feeding stateTimeSummary. It has to be a signal rather than a bare Date.now():
+   * the summary is a getter, so without a tracked dependency the counter only re-rendered
+   * when something else happened to trigger change detection, and could sit at "0m" for
+   * minutes. Ticking a signal re-renders just this view, at one cheap update per interval.
+   */
+  private readonly now = signal(Date.now());
+
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.loadTicket(id);
 
-    // stateTimeSummary reads Date.now() on every render; nothing re-renders it on its own,
-    // so tick periodically to keep "llevás"/"quedan" fresh without a manual refresh.
-    interval(60_000).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+    this.tenantService.getSettings().subscribe({
+      next: (s) => {
+        this.commentHistoryEnabled = s.enableCommentHistory;
+        // History off = classic single note per state: prefill the textarea with the
+        // stored note (settings may arrive after the form was built, hence the patch).
+        if (!s.enableCommentHistory && this.ticket && !this.stateForm.get('comment')?.value) {
+          this.stateForm.get('comment')?.setValue(this.ticket.currentStateNote ?? '');
+        }
+      },
+    });
+
+    // The summary is displayed down to the minute, so half-minute ticks keep it honest
+    // without the counter visibly lagging behind the wall clock.
+    interval(30_000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.now.set(Date.now()));
   }
 
   loadTicket(id: number): void {
@@ -112,7 +136,9 @@ export class TicketDetailComponent implements OnInit {
     ticket.checklistValues.forEach((c) => {
       controls[`check_${c.checklistItemId}`] = [c.isChecked, c.isRequired ? [Validators.requiredTrue] : []];
     });
-    controls['comment'] = [ticket.currentStateNote ?? ''];
+    // With comment history on, the box is an append-only feed input and starts empty;
+    // with it off, it's the classic editable note of the current state.
+    controls['comment'] = [this.commentHistoryEnabled ? '' : (ticket.currentStateNote ?? '')];
     this.stateForm = this.fb.group(controls);
   }
 
@@ -241,6 +267,11 @@ export class TicketDetailComponent implements OnInit {
     });
   }
 
+  get currentStateComments() {
+    if (!this.ticket) return [];
+    return this.ticket.comments.filter(c => c.workflowStateId === this.ticket!.currentStateId);
+  }
+
   loadActivity(): void {
     if (!this.ticket) return;
     this.service.getActivity(this.ticket.id).subscribe({ next: (a) => (this.activity = a) });
@@ -268,19 +299,13 @@ export class TicketDetailComponent implements OnInit {
   }
 
   getSubStateLabel(s: TicketSubState): string {
-    if (s === TicketSubState.Green) return 'En tiempo';
-    if (s === TicketSubState.Yellow) return 'Por vencer';
-    return 'Vencido';
+    if (s === TicketSubState.Green) return this.translate.instant('TICKETS.SUB_STATE_GREEN');
+    if (s === TicketSubState.Yellow) return this.translate.instant('TICKETS.SUB_STATE_YELLOW');
+    return this.translate.instant('TICKETS.SUB_STATE_RED');
   }
 
   isCompletedState(stateId: number): boolean {
     return this.ticket?.completedStates?.some(s => s.stateId === stateId) ?? false;
-  }
-
-  private parseUtcDate(raw: string): Date {
-    // PostgreSQL sends microseconds (6 decimal places); JS Date only handles 3 (ms).
-    const cleaned = raw.replace(/(\.\d{3})\d+/, '$1');
-    return new Date(cleaned.endsWith('Z') ? cleaned : `${cleaned}Z`);
   }
 
   private formatHours(hours: number): string {
@@ -297,15 +322,16 @@ export class TicketDetailComponent implements OnInit {
     const state = this.workflowStates.find((s) => s.id === this.ticket!.currentStateId);
     if (!state) return null;
 
-    const enteredAt = this.parseUtcDate(this.ticket.stateEnteredAt);
-    const effectiveStart = this.ticket.subStateOverrideUntil
-      ? this.parseUtcDate(this.ticket.subStateOverrideUntil)
-      : enteredAt;
+    const enteredAt = parseApiDate(this.ticket.stateEnteredAt);
+    if (!enteredAt) return null;
+    const effectiveStart = parseApiDate(this.ticket.subStateOverrideUntil) ?? enteredAt;
+
+    const now = this.now();
 
     // Clamp to 0: an override baseline in the future (extension not yet elapsed) or a clock
     // skew must never surface as a negative elapsed/remaining figure.
-    const elapsedReal = Math.max(0, (Date.now() - enteredAt.getTime()) / 3_600_000);
-    const elapsedEffective = Math.max(0, (Date.now() - effectiveStart.getTime()) / 3_600_000);
+    const elapsedReal = Math.max(0, (now - enteredAt.getTime()) / 3_600_000);
+    const elapsedEffective = Math.max(0, (now - effectiveStart.getTime()) / 3_600_000);
     const elapsed = this.formatHours(elapsedReal);
 
     if (this.ticket.subState === TicketSubState.Red) {
@@ -344,7 +370,12 @@ export class TicketDetailComponent implements OnInit {
     if (!this.ticket) return;
     const completed = this.ticket.completedStates?.find(s => s.stateId === stateId);
     if (completed) {
-      this.dialog.open(StateDetailDialogComponent, { width: '520px', data: completed });
+      this.dialog.open(StateDetailDialogComponent, {
+        width: '520px',
+        data: { ticketId: this.ticket.id, state: completed },
+      }).afterClosed().subscribe(updated => {
+        if (updated) this.loadTicket(this.ticket!.id);
+      });
     }
   }
 

@@ -6,11 +6,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { TicketService, TicketListItemDto, TicketSubState } from '../../../core/services/ticket.service';
+import { ApiDatePipe } from '../../../shared/pipes/api-date.pipe';
 
 @Component({
   selector: 'app-ticket-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, TranslatePipe],
+  imports: [CommonModule, RouterModule, MatIconModule, TranslatePipe, ApiDatePipe],
   templateUrl: './ticket-dashboard.component.html',
   styleUrls: ['./ticket-dashboard.component.scss'],
 })

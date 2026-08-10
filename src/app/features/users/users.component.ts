@@ -18,7 +18,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { UserService, UserDto } from '../../core/services/user.service';
 import { UserDialogComponent } from './user-dialog/user-dialog.component';
+import { SessionHistoryDialogComponent } from './session-history-dialog/session-history-dialog.component';
 import { ConfirmDialogComponent } from '../../shared/dialogs/confirm-dialog/confirm-dialog.component';
+import { ApiDatePipe } from '../../shared/pipes/api-date.pipe';
 
 @Component({
   selector: 'app-users',
@@ -27,7 +29,7 @@ import { ConfirmDialogComponent } from '../../shared/dialogs/confirm-dialog/conf
     CommonModule, ReactiveFormsModule, MatTableModule, MatPaginatorModule,
     MatInputModule, MatFormFieldModule, MatButtonModule, MatIconModule,
     MatChipsModule, MatCardModule, MatSelectModule, MatDialogModule,
-    MatTooltipModule, MatProgressSpinnerModule, TranslatePipe,
+    MatTooltipModule, MatProgressSpinnerModule, TranslatePipe, ApiDatePipe,
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
@@ -97,6 +99,11 @@ export class UsersComponent implements OnInit {
           this.loadUsers();
         }
       });
+  }
+
+  openSessions(user: UserDto, event: Event): void {
+    event.stopPropagation();
+    this.dialog.open(SessionHistoryDialogComponent, { width: '560px', data: user });
   }
 
   confirmDelete(user: UserDto, event: Event): void {

@@ -10,6 +10,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent)
   },
   {
+    path: 'change-password',
+    loadComponent: () => import('./features/auth/change-password/change-password.component').then(m => m.ChangePasswordComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: '',
     loadComponent: () => import('./shared/layout/shell/shell.component').then(m => m.ShellComponent),
     canActivate: [authGuard],
@@ -21,6 +26,12 @@ export const routes: Routes = [
       {
         path: 'overview',
         loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
+        canActivate: [roleGuard],
+        data: { role: 'Admin' }
+      },
+      {
+        path: 'reports',
+        loadComponent: () => import('./features/reports/reports.component').then(m => m.ReportsComponent),
         canActivate: [roleGuard],
         data: { role: 'Admin' }
       },

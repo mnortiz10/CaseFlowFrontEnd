@@ -3,7 +3,7 @@
   {{ data.stateName }}
 </h2>
 
-<mat-dialog-content class="min-w-96">
+<mat-dialog-content class="sm:min-w-96">
 
   <!-- Tiempo y sub-estado -->
   <div class="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
@@ -12,7 +12,7 @@
       <span class="text-gray-500">{{ 'TICKETS.STATE_DURATION' | translate }}:</span>
       <strong class="ml-1">{{ formatDuration(data.totalHoursInState) }}</strong>
       <span class="text-gray-400 text-xs ml-2">
-        ({{ data.enteredAt | date:'dd/MM HH:mm' }} → {{ data.transitionedAt | date:'dd/MM HH:mm' }})
+        ({{ data.enteredAt | apiDate | date:'dd/MM HH:mm' }} → {{ data.transitionedAt | apiDate | date:'dd/MM HH:mm' }})
       </span>
     </div>
     <span class="text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap"
@@ -24,7 +24,7 @@
   <!-- Completado por -->
   <p class="text-sm text-gray-500 mb-4 flex flex-wrap gap-1">
     <span>{{ 'TICKETS.COMPLETED_ON' | translate }}</span>
-    <strong>{{ data.transitionedAt | date:'dd/MM/yyyy HH:mm' }}</strong>
+    <strong>{{ data.transitionedAt | apiDate | date:'dd/MM/yyyy HH:mm' }}</strong>
     <span>{{ 'TICKETS.BY' | translate }}</span>
     <strong>{{ data.transitionedBy }}</strong>
     @if (data.comment) {
@@ -44,7 +44,7 @@
           <div class="text-sm flex items-start gap-2">
             <span class="text-blue-500 font-medium whitespace-nowrap">+{{ ext.extensionHours }}h</span>
             <span class="text-gray-500">
-              {{ ext.grantedAt | date:'dd/MM HH:mm' }} · {{ ext.grantedBy }}
+              {{ ext.grantedAt | apiDate | date:'dd/MM HH:mm' }} · {{ ext.grantedBy }}
               @if (ext.reason) {
                 <span class="italic text-gray-400"> — "{{ ext.reason }}"</span>
               }
@@ -63,16 +63,52 @@
     </h3>
     <div class="space-y-2 mb-4">
       @for (f of data.fieldValues; track f.fieldId) {
-        <div class="flex items-start gap-2 text-sm py-1 border-b border-gray-100 last:border-0">
-          <span class="font-medium text-gray-600 min-w-32">{{ f.label }}</span>
-          @if (isCheckbox(f)) {
-            <mat-icon class="text-base leading-none"
-              [class.text-green-600]="f.value === 'true'"
-              [class.text-gray-300]="f.value !== 'true'">
-              {{ f.value === 'true' ? 'check_circle' : 'radio_button_unchecked' }}
-            </mat-icon>
+        <div class="flex flex-wrap items-start gap-2 text-sm py-1 border-b border-gray-100 last:border-0">
+          <span class="font-medium text-gray-600 sm:min-w-32 pt-1">{{ f.label }}</span>
+
+          @if (!editing) {
+            @if (isCheckbox(f)) {
+              <mat-icon class="text-base leading-none"
+                [class.text-green-600]="f.value === 'true'"
+                [class.text-gray-300]="f.value !== 'true'">
+                {{ f.value === 'true' ? 'check_circle' : 'radio_button_unchecked' }}
+              </mat-icon>
+            } @else {
+              <span class="text-gray-800">{{ f.value ?? '—' }}</span>
+            }
           } @else {
-            <span class="text-gray-800">{{ f.value ?? '—' }}</span>
+            <div class="flex-1">
+              @switch (f.fieldType) {
+                @case (FormFieldType.Checkbox) {
+                  <mat-checkbox [(ngModel)]="editFieldChecks[f.fieldId]" [name]="'field_' + f.fieldId"></mat-checkbox>
+                }
+                @case (FormFieldType.TextArea) {
+                  <textarea class="w-full border border-gray-300 rounded p-2 text-sm" rows="3"
+                    [(ngModel)]="editFieldValues[f.fieldId]" [name]="'field_' + f.fieldId"></textarea>
+                }
+                @case (FormFieldType.Select) {
+                  <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                    <mat-select [(ngModel)]="editFieldValues[f.fieldId]" [name]="'field_' + f.fieldId">
+                      @for (opt of parseOptions(f.options); track opt) {
+                        <mat-option [value]="opt">{{ opt }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                }
+                @case (FormFieldType.Number) {
+                  <input type="number" class="w-full border border-gray-300 rounded p-2 text-sm"
+                    [(ngModel)]="editFieldValues[f.fieldId]" [name]="'field_' + f.fieldId">
+                }
+                @case (FormFieldType.Date) {
+                  <input type="date" class="w-full border border-gray-300 rounded p-2 text-sm"
+                    [(ngModel)]="editFieldValues[f.fieldId]" [name]="'field_' + f.fieldId">
+                }
+                @default {
+                  <input type="text" class="w-full border border-gray-300 rounded p-2 text-sm"
+                    [(ngModel)]="editFieldValues[f.fieldId]" [name]="'field_' + f.fieldId">
+                }
+              }
+            </div>
           }
         </div>
       }
@@ -90,12 +126,18 @@
     <div class="space-y-1">
       @for (c of data.checklistValues; track c.checklistItemId) {
         <div class="flex items-center gap-2 text-sm py-0.5">
-          <mat-icon class="text-base" [class.text-green-600]="c.isChecked" [class.text-gray-300]="!c.isChecked">
-            {{ c.isChecked ? 'check_box' : 'check_box_outline_blank' }}
-          </mat-icon>
-          <span [class.line-through]="c.isChecked" [class.text-gray-400]="c.isChecked">
-            {{ c.title }}{{ c.isRequired ? ' *' : '' }}
-          </span>
+          @if (!editing) {
+            <mat-icon class="text-base" [class.text-green-600]="c.isChecked" [class.text-gray-300]="!c.isChecked">
+              {{ c.isChecked ? 'check_box' : 'check_box_outline_blank' }}
+            </mat-icon>
+            <span [class.line-through]="c.isChecked" [class.text-gray-400]="c.isChecked">
+              {{ c.title }}{{ c.isRequired ? ' *' : '' }}
+            </span>
+          } @else {
+            <mat-checkbox [(ngModel)]="editChecklistValues[c.checklistItemId]" [name]="'check_' + c.checklistItemId">
+              {{ c.title }}{{ c.isRequired ? ' *' : '' }}
+            </mat-checkbox>
+          }
         </div>
       }
     </div>
@@ -104,8 +146,44 @@
   @if (data.fieldValues.length === 0 && data.checklistValues.length === 0) {
     <p class="text-gray-400 text-sm text-center py-4">{{ 'TICKETS.NO_STATE_INFO' | translate }}</p>
   }
+
+  <!-- Historial de comentarios del estado -->
+  @if (data.comments && data.comments.length > 0) {
+    <mat-divider class="mb-3 mt-2"></mat-divider>
+    <h3 class="text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wide flex items-center gap-1">
+      <mat-icon class="text-base leading-none">chat_bubble_outline</mat-icon>
+      {{ 'TICKETS.COMMENTS' | translate }} ({{ data.comments.length }})
+    </h3>
+    <div class="space-y-2 max-h-52 overflow-y-auto pr-1">
+      @for (c of data.comments; track $index) {
+        <div class="pb-2 border-b border-gray-100 last:border-0 last:pb-0">
+          <p class="text-sm text-gray-800 m-0 whitespace-pre-line">{{ c.text }}</p>
+          <div class="flex items-center gap-2 mt-0.5 text-xs text-gray-400">
+            <strong class="text-gray-500">{{ c.createdByName }}</strong>
+            <span>{{ c.createdAt | apiDate | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>{{ 'COMMON.CLOSE' | translate }}</button>
+  @if (canEdit && !editing && (data.fieldValues.length > 0 || data.checklistValues.length > 0)) {
+    <button mat-stroked-button color="primary" (click)="startEdit()">
+      <mat-icon>edit</mat-icon>
+      {{ 'TICKETS.EDIT_PAST_STATE' | translate }}
+    </button>
+  }
+  @if (editing) {
+    <button mat-button (click)="cancelEdit()" [disabled]="saving">{{ 'COMMON.CANCEL' | translate }}</button>
+    <button mat-flat-button color="primary" (click)="saveEdit()" [disabled]="saving">
+      @if (saving) {
+        <mat-spinner diameter="18" style="display:inline-block; margin-right:6px"></mat-spinner>
+      }
+      {{ 'COMMON.SAVE' | translate }}
+    </button>
+  } @else {
+    <button mat-button mat-dialog-close>{{ 'COMMON.CLOSE' | translate }}</button>
+  }
 </mat-dialog-actions>

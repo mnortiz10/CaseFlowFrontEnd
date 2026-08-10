@@ -52,6 +52,11 @@
         <span>{{ 'NAV.TICKETS' | translate }}</span>
       </a>
 
+      <a *appHasRole="'Admin'" routerLink="/reports" routerLinkActive="active" class="nav-item">
+        <mat-icon>insert_chart</mat-icon>
+        <span>{{ 'NAV.REPORTS' | translate }}</span>
+      </a>
+
       <a *appHasPermission="'ticket_types.view'" routerLink="/ticket-types" routerLinkActive="active" class="nav-item">
         <mat-icon>category</mat-icon>
         <span>{{ 'NAV.TICKET_TYPES' | translate }}</span>

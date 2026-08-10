@@ -1,15 +1,38 @@
+.tickets-page {
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) { padding: 12px; }
+}
+
+.tickets-header {
+  gap: 8px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: stretch;
+
+    .create-btn { width: 100%; }
+  }
+}
+
 .filter-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  padding: 12px 16px;
+  padding: 8px 16px;
   background: #fafafa;
   border-bottom: 1px solid #e5e7eb;
 
   mat-form-field {
     // Remove default bottom margin so fields sit flush
     .mat-mdc-form-field-subscript-wrapper { display: none; }
+    .mat-mdc-text-field-wrapper { padding: 0 10px; }
+    .mat-mdc-form-field-infix { min-height: 0; padding: 8px 0; }
+    .mat-mdc-form-field-icon-prefix { padding-right: 6px; }
+    mat-icon { font-size: 1.1rem; width: 20px; height: 20px; }
   }
 
   .filter-title {
@@ -24,8 +47,27 @@
   .filter-clear {
     margin-left: auto;
     align-self: center;
-    height: 40px;
+    height: 36px;
     white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    padding: 8px 12px;
+
+    .filter-title {
+      flex: 1 1 100%;
+      max-width: none;
+    }
+
+    .filter-sm {
+      flex: 1 1 calc(50% - 8px);
+      min-width: 130px;
+    }
+
+    .filter-clear {
+      margin-left: 0;
+      width: 100%;
+    }
   }
 }
 
@@ -36,4 +78,119 @@
   .mat-mdc-form-field-subscript-wrapper { display: none; }
   .mat-mdc-text-field-wrapper { padding: 0 8px; }
   .mat-mdc-form-field-infix { min-height: 0; padding: 6px 0; }
+}
+
+.empty-msg {
+  text-align: center;
+  padding: 32px 16px;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* ─── Card content: menos aire arriba de la tabla ───────────────────── */
+mat-card-content {
+  padding-top: 6px !important;
+}
+
+/* ─── Tabla (desktop / tablet) vs tarjetas (móvil) ──────────────────── */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  table { min-width: 760px; }
+
+  th.mat-mdc-header-cell,
+  td.mat-mdc-cell {
+    padding: 0 10px !important;
+  }
+
+  tr.mat-mdc-header-row {
+    height: 38px !important;
+  }
+
+  tr.mat-mdc-row {
+    height: 44px !important;
+  }
+}
+
+.mobile-cards { display: none; }
+
+@media (max-width: 768px) {
+  .table-wrap { display: none; }
+
+  .mobile-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 4px 0;
+  }
+}
+
+/* ─── Tarjeta de ticket (móvil) ─────────────────────────────────────── */
+.ticket-card {
+  border: 1px solid var(--cf-border);
+  border-radius: var(--cf-radius-md);
+  background: var(--cf-surface);
+  padding: 12px;
+  cursor: pointer;
+  transition: box-shadow var(--cf-t), border-color var(--cf-t);
+
+  &:active {
+    border-color: var(--cf-accent);
+    box-shadow: 0 0 0 3px var(--cf-accent-bg);
+  }
+}
+
+.tc-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+
+  .tc-number {
+    font-family: 'SF Mono', ui-monospace, monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #2563eb;
+  }
+
+  .tc-state {
+    margin-left: auto;
+    font-size: 0.7rem;
+    max-width: 45%;
+  }
+}
+
+.tc-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-top: 6px;
+  color: var(--cf-text);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.tc-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: var(--cf-text-muted);
+
+  .tc-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+}
+
+.tc-assignee {
+  margin-top: 10px;
+
+  .assignee-select { width: 100%; }
 }

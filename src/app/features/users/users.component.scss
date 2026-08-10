@@ -85,10 +85,21 @@ td.mat-mdc-cell {
   letter-spacing: 0;
 }
 
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
 .user-name {
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--cf-text);
+}
+
+.user-username {
+  font-size: 0.72rem;
+  color: var(--cf-text-muted);
 }
 
 .text-muted { color: var(--cf-text-muted) !important; font-size: 0.8rem !important; }
