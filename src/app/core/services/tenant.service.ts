@@ -8,10 +8,12 @@ export interface TenantSettingsDto {
   name: string;
   slug: string;
   promptExtendTimeOnStateSave: boolean;
+  enableCommentHistory: boolean;
 }
 
 export interface UpdateTenantSettingsDto {
   promptExtendTimeOnStateSave: boolean;
+  enableCommentHistory: boolean;
 }
 
 @Injectable({ providedIn: 'root' })

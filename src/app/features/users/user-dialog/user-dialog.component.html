@@ -29,6 +29,13 @@
       </mat-form-field>
     </div>
 
+    @if (isEdit) {
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'USERS.FIELDS.USERNAME' | translate }}</mat-label>
+        <input matInput [value]="data.user!.userName" disabled>
+      </mat-form-field>
+    }
+
     @if (!isEdit) {
       <mat-form-field appearance="outline">
         <mat-label>{{ 'USERS.FIELDS.EMAIL' | translate }}</mat-label>
@@ -40,23 +47,37 @@
           <mat-error>{{ 'USERS.VALIDATION.EMAIL_INVALID' | translate }}</mat-error>
         }
       </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'USERS.FIELDS.PASSWORD' | translate }}</mat-label>
-        <input matInput formControlName="password"
-               [type]="hidePassword ? 'password' : 'text'"
-               autocomplete="new-password">
-        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
-          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-        </button>
-        @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
-          <mat-error>{{ 'USERS.VALIDATION.PASSWORD_REQUIRED' | translate }}</mat-error>
-        }
-        @if (form.get('password')?.hasError('minlength') && form.get('password')?.touched) {
-          <mat-error>{{ 'USERS.VALIDATION.PASSWORD_MIN' | translate }}</mat-error>
-        }
-      </mat-form-field>
     }
+
+    @if (isEdit) {
+      <div class="section-divider"></div>
+      <p class="section-label">{{ 'USERS.FIELDS.RESET_PASSWORD_SECTION' | translate }}</p>
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ (isEdit ? 'USERS.FIELDS.NEW_PASSWORD' : 'USERS.FIELDS.PASSWORD') | translate }}</mat-label>
+      <input matInput formControlName="password"
+             [type]="hidePassword ? 'password' : 'text'"
+             autocomplete="new-password">
+      <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+      @if (isEdit) {
+        <mat-hint>{{ 'USERS.FIELDS.NEW_PASSWORD_HINT' | translate }}</mat-hint>
+      }
+      @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+        <mat-error>{{ 'USERS.VALIDATION.PASSWORD_REQUIRED' | translate }}</mat-error>
+      }
+      @if (form.get('password')?.hasError('minlength') && form.get('password')?.touched) {
+        <mat-error>{{ 'USERS.VALIDATION.PASSWORD_MIN' | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="status-row">
+      <mat-checkbox formControlName="mustChangePassword">
+        {{ 'USERS.FIELDS.MUST_CHANGE_PASSWORD' | translate }}
+      </mat-checkbox>
+    </div>
 
     <mat-form-field appearance="outline">
       <mat-label>{{ 'USERS.FIELDS.ROLES' | translate }}</mat-label>
@@ -68,6 +89,16 @@
           <mat-option [value]="role.name">{{ role.name }}</mat-option>
         }
       </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'USERS.FIELDS.TICKET_TYPES' | translate }}</mat-label>
+      <mat-select formControlName="allowedTicketTypeIds" multiple>
+        @for (tt of ticketTypes; track tt.id) {
+          <mat-option [value]="tt.id">{{ tt.name }}</mat-option>
+        }
+      </mat-select>
+      <mat-hint>{{ 'USERS.FIELDS.TICKET_TYPES_HINT' | translate }}</mat-hint>
     </mat-form-field>
 
     @if (isEdit) {

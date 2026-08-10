@@ -5,13 +5,36 @@ import { environment } from '../../../environments/environment';
 
 export interface UserDto {
   id: number;
+  userName: string;
   firstName: string;
   lastName: string;
   email: string;
   isActive: boolean;
+  mustChangePassword: boolean;
   createdAt: string;
   lastLoginAt: string | null;
   roles: string[];
+  allowedTicketTypeIds: number[];
+}
+
+export enum SessionEventType {
+  Login = 0,
+  Logout = 1,
+  InactivityExpired = 2,
+}
+
+export interface UserSessionEventDto {
+  eventType: SessionEventType;
+  occurredAt: string;
+  sessionStartedAt: string | null;
+  durationMinutes: number | null;
+}
+
+export interface UserSessionSummaryDto {
+  totalLogins: number;
+  totalExpirations: number;
+  totalActiveMinutes: number;
+  events: UserSessionEventDto[];
 }
 
 export interface PagedResult<T> {
@@ -28,6 +51,7 @@ export interface CreateUserDto {
   email: string;
   password: string;
   roles: string[];
+  mustChangePassword?: boolean;
 }
 
 export interface UpdateUserDto {
@@ -75,5 +99,17 @@ export class UserService {
 
   assignRoles(id: number, roles: string[]): Observable<void> {
     return this.http.post<void>(`${this.base}/${id}/roles`, { roles });
+  }
+
+  resetPassword(id: number, newPassword: string, mustChangePassword: boolean): Observable<void> {
+    return this.http.post<void>(`${this.base}/${id}/reset-password`, { newPassword, mustChangePassword });
+  }
+
+  assignTicketTypes(id: number, ticketTypeIds: number[]): Observable<void> {
+    return this.http.post<void>(`${this.base}/${id}/ticket-types`, { ticketTypeIds });
+  }
+
+  getSessionSummary(id: number): Observable<UserSessionSummaryDto> {
+    return this.http.get<UserSessionSummaryDto>(`${this.base}/${id}/session-events`);
   }
 }

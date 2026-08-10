@@ -22,6 +22,7 @@ import { WorkflowService, WorkflowStateDto } from '../../core/services/workflow.
 import { UserService, UserDto } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { CreateTicketDialogComponent } from './create-ticket-dialog/create-ticket-dialog.component';
+import { parseApiDate } from '../../core/utils/api-date';
 
 @Component({
   selector: 'app-tickets',
@@ -49,6 +50,7 @@ export class TicketsComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
 
   displayedColumns = ['subState','ticketNumber','title','ticketType','currentState','timeInState','assignedTo'];
+  TicketSubState = TicketSubState;
   tickets: TicketListItemDto[] = [];
   ticketTypes: TicketTypeDto[] = [];
   workflowStates: WorkflowStateDto[] = [];
@@ -71,12 +73,16 @@ export class TicketsComponent implements OnInit {
     ticketTypeId: [null as number | null],
     stateId:      [{ value: null as number | null, disabled: true }],
     subState:     [null as number | null],
+    assignedToUserId: [null as number | null],
   });
 
   get stateCtrl() { return this.filterForm.get('stateId')!; }
 
   ngOnInit(): void {
-    this.ticketTypeService.getAll().subscribe({ next: tt => this.ticketTypes = tt });
+    // Only show the ticket types this user is allowed to manage (empty = all).
+    this.ticketTypeService.getAll().subscribe({
+      next: tt => this.ticketTypes = tt.filter(t => this.auth.canManageTicketType(t.id)),
+    });
     this.userService.getAllActive().subscribe({ next: u => this.users = u });
 
     const subStateParam = this.route.snapshot.queryParamMap.get('subState');
@@ -116,9 +122,10 @@ export class TicketsComponent implements OnInit {
       this.load();
     });
 
-    // State & vigencia — immediate
+    // State, vigencia & asignado — immediate
     this.stateCtrl.valueChanges.subscribe(() => { this.page = 1; this.load(); });
     this.filterForm.get('subState')!.valueChanges.subscribe(() => { this.page = 1; this.load(); });
+    this.filterForm.get('assignedToUserId')!.valueChanges.subscribe(() => { this.page = 1; this.load(); });
   }
 
   load(): void {
@@ -131,6 +138,7 @@ export class TicketsComponent implements OnInit {
       v.ticketTypeId  != null ? v.ticketTypeId  : undefined,
       v.stateId       != null ? v.stateId       : undefined,
       v.subState      != null ? v.subState      : undefined,
+      v.assignedToUserId != null ? v.assignedToUserId : undefined,
     ).subscribe({ next: r => { this.tickets = r.items; this.totalCount = r.totalCount; } });
   }
 
@@ -138,7 +146,7 @@ export class TicketsComponent implements OnInit {
     this.stateCtrl.disable({ emitEvent: false });
     this.workflowStates = [];
     this.filterForm.reset(
-      { title: '', ticketNumber: '', ticketTypeId: null, stateId: null, subState: null },
+      { title: '', ticketNumber: '', ticketTypeId: null, stateId: null, subState: null, assignedToUserId: null },
       { emitEvent: false },
     );
     this.page = 1;
@@ -182,7 +190,9 @@ export class TicketsComponent implements OnInit {
   }
 
   getSubStateLabel(s: TicketSubState): string {
-    return s === TicketSubState.Green ? 'En tiempo' : s === TicketSubState.Yellow ? 'Por vencer' : 'Vencido';
+    return s === TicketSubState.Green ? this.translate.instant('TICKETS.SUB_STATE_GREEN')
+         : s === TicketSubState.Yellow ? this.translate.instant('TICKETS.SUB_STATE_YELLOW')
+         : this.translate.instant('TICKETS.SUB_STATE_RED');
   }
 
   getSubStatePillClass(s: TicketSubState): string {
@@ -193,22 +203,27 @@ export class TicketsComponent implements OnInit {
 
   hasActiveFilters(): boolean {
     const v = this.filterForm.getRawValue();
-    return !!(v.title || v.ticketNumber || v.ticketTypeId != null || v.stateId != null || v.subState != null);
+    return !!(v.title || v.ticketNumber || v.ticketTypeId != null || v.stateId != null || v.subState != null || v.assignedToUserId != null);
   }
 
-  hoursInState(raw: string | null | undefined): string {
-    if (!raw) return '—';
-    // PostgreSQL sends microseconds (6 decimal places); JS Date only handles 3 (ms).
-    // Strip extra sub-millisecond digits, then force UTC Z suffix.
-    const cleaned = raw.replace(/(\.\d{3})\d+/, '$1');
-    const utc = cleaned.endsWith('Z') ? cleaned : cleaned + 'Z';
-    const ms = Date.now() - new Date(utc).getTime();
-    if (isNaN(ms) || ms < 0) return '—';
-    const h = ms / 3_600_000;
-    if (h < 1) return `${Math.floor(h * 60)}m`;
-    if (h < 24) return `${Math.floor(h)}h`;
-    const d = Math.floor(h / 24);
-    const rem = Math.floor(h % 24);
+  private formatHours(hours: number): string {
+    if (isNaN(hours) || hours < 0) return '—';
+    if (hours < 1) return `${Math.floor(hours * 60)}m`;
+    if (hours < 24) return `${Math.floor(hours)}h`;
+    const d = Math.floor(hours / 24);
+    const rem = Math.floor(hours % 24);
     return rem > 0 ? `${d}d ${rem}h` : `${d}d`;
+  }
+
+  timeRemainingLabel(t: TicketListItemDto): string {
+    if (t.isCurrentStateFinal) return this.translate.instant('TICKETS.FINALIZED');
+    const effectiveStart = parseApiDate(t.subStateOverrideUntil ?? t.stateEnteredAt);
+    if (!effectiveStart) return '—';
+    const elapsed = Math.max(0, (Date.now() - effectiveStart.getTime()) / 3_600_000);
+    const remaining = t.redThresholdHours - elapsed;
+    if (remaining >= 0) {
+      return this.translate.instant('TICKETS.EXPIRES_IN', { time: this.formatHours(remaining) });
+    }
+    return this.translate.instant('TICKETS.EXPIRED_AGO', { time: this.formatHours(-remaining) });
   }
 }

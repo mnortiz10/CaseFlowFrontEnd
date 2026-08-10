@@ -29,7 +29,7 @@
       <span class="legend-item"><span class="dot" style="background:#22c55e"></span> {{ 'WORKFLOWS.INITIAL' | translate }}</span>
       <span class="legend-item"><span class="dot" style="background:#3b82f6"></span> Normal</span>
       <span class="legend-item"><span class="dot" style="background:#8b5cf6"></span> {{ 'WORKFLOWS.FINAL' | translate }}</span>
-      <span class="legend-item drag-hint"><mat-icon style="font-size:14px;width:14px;height:14px;vertical-align:middle">drag_indicator</mat-icon> Arrastrá para reordenar</span>
+      <span class="legend-item drag-hint"><mat-icon style="font-size:14px;width:14px;height:14px;vertical-align:middle">drag_indicator</mat-icon> {{ 'WORKFLOWS.DRAG_HINT' | translate }}</span>
     </div>
 
     <!-- Flow canvas -->
@@ -65,7 +65,7 @@
             <div class="state-card" [style.border-left-color]="getNodeColor(state)">
 
               <!-- Drag handle -->
-              <mat-icon cdkDragHandle class="drag-handle" matTooltip="Arrastrá para reordenar">
+              <mat-icon cdkDragHandle class="drag-handle" [matTooltip]="'WORKFLOWS.DRAG_HINT' | translate">
                 drag_indicator
               </mat-icon>
 
@@ -75,10 +75,10 @@
                   <span class="card-name">{{ state.name }}</span>
                   <div class="badges">
                     @if (state.isInitial) {
-                      <span class="badge badge-green">Inicial</span>
+                      <span class="badge badge-green">{{ 'WORKFLOWS.INITIAL' | translate }}</span>
                     }
                     @if (state.isFinal) {
-                      <span class="badge badge-purple">Final</span>
+                      <span class="badge badge-purple">{{ 'WORKFLOWS.FINAL' | translate }}</span>
                     }
                     @if (state.canTransitionToFinal && !state.isFinal) {
                       <span class="badge badge-blue">→ Final</span>
@@ -132,10 +132,10 @@
       @if (sortedStates.length === 0) {
         <div class="empty-flow">
           <mat-icon style="font-size:48px;width:48px;height:48px;color:#cbd5e1">account_tree</mat-icon>
-          <p class="text-gray-400 mt-2">Este workflow no tiene estados todavía.</p>
+          <p class="text-gray-400 mt-2">{{ 'WORKFLOWS.NO_STATES' | translate }}</p>
           <button mat-flat-button color="primary" class="mt-3" (click)="openAddState()">
             <mat-icon>add</mat-icon>
-            Agregar primer estado
+            {{ 'WORKFLOWS.ADD_FIRST_STATE' | translate }}
           </button>
         </div>
       }

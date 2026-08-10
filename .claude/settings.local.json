@@ -53,10 +53,26 @@
       "Bash(curl -sk https://localhost:58220/api/tickets/1 -H 'Authorization: Bearer __CMDSUB_OUTPUT__')",
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\(JSON.stringify\\(j.checklistValues,null,2\\)\\)}\\)\")",
       "Bash(tail -60 /c/Users/marti/AppData/Local/Temp/claude/c--Users-marti-CaseFlow-frontend-caseflow-ui/80bad903-4f65-4ebc-8609-f135ad89d26a/scratchpad/frontend.log)",
-      "Bash(powershell -Command \"Get-CimInstance Win32_Process -Filter \\\\\"CommandLine like '%ng serve%'\\\\\" | Select-Object ProcessId,CommandLine\")"
+      "Bash(powershell -Command \"Get-CimInstance Win32_Process -Filter \\\\\"CommandLine like '%ng serve%'\\\\\" | Select-Object ProcessId,CommandLine\")",
+      "Bash(ls \"C:\\\\Users\\\\marti\\\\CaseFlow\" && echo --- && ls \"C:\\\\Users\\\\marti\\\\CaseFlow\\\\frontend\\\\caseflow-ui\")",
+      "Bash(ls \"C:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.Domain\\\\Entities\" \"C:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.Domain\\\\Enums\" \"C:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.Infrastructure\\\\Services\" \"C:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.Application\\\\DTOs\\\\Users\" \"C:\\\\Users\\\\marti\\\\CaseFlow\\\\backend\\\\CaseFlow.Application\\\\DTOs\\\\Auth\")",
+      "Read(//c/Users/marti/CaseFlow/backend/CaseFlow.Domain/Entities/**)",
+      "Bash(dotnet ef *)",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\('estado actual:',j.currentStateName,'| nextStateId:',j.nextStateId,'| nextStateName:',j.nextStateName,'| campos requeridos:',j.fieldValues.filter\\(f=>f.isRequired\\).map\\(f=>f.label\\).join\\(','\\)||'ninguno'\\)}\\)\")",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\('  finalizados:',j.totalFinalized,'| activos:',j.totalActive,'| vencidos:',j.totalOverdue\\)}\\)\")",
+      "Read(//c/Users/marti/CaseFlow/backend/CaseFlow.Application/Services/**)",
+      "Bash(xargs -I{} basename {})",
+      "Bash(netstat -ano)",
+      "Bash(node -e ' *)",
+      "Edit",
+      "Write",
+      "NotebookEdit",
+      "Bash",
+      "PowerShell"
     ],
     "additionalDirectories": [
       "C:/Users/marti/CaseFlow/backend"
-    ]
+    ],
+    "defaultMode": "acceptEdits"
   }
 }

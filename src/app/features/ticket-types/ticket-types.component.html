@@ -1,6 +1,6 @@
-<div class="p-6">
+<div class="list-page p-6">
   <mat-card>
-    <mat-card-header class="flex items-center justify-between mb-4">
+    <mat-card-header class="list-header flex items-center justify-between mb-4">
       <mat-card-title>{{ 'TICKET_TYPES.TITLE' | translate }}</mat-card-title>
       <button mat-flat-button color="primary" (click)="openCreate()">
         <mat-icon>add</mat-icon>
@@ -9,6 +9,7 @@
     </mat-card-header>
 
     <mat-card-content>
+      <div class="table-wrap">
       <table mat-table [dataSource]="ticketTypes" class="w-full">
 
         <ng-container matColumnDef="color">
@@ -71,6 +72,7 @@
           </tr>
         }
       </table>
+      </div>
     </mat-card-content>
   </mat-card>
 </div>

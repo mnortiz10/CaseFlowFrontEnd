@@ -1,6 +1,6 @@
-<div class="p-6">
+<div class="list-page p-6">
   <mat-card>
-    <mat-card-header class="flex items-center justify-between mb-4">
+    <mat-card-header class="list-header flex items-center justify-between mb-4">
       <mat-card-title>{{ 'WORKFLOWS.TITLE' | translate }}</mat-card-title>
       <button mat-flat-button color="primary" (click)="showCreateForm = !showCreateForm">
         <mat-icon>add</mat-icon>
@@ -10,7 +10,7 @@
 
     @if (showCreateForm) {
       <div class="px-4 pb-4 border-b mb-4">
-        <div class="flex gap-3 items-start">
+        <div class="create-form-row flex gap-3 items-start">
           <mat-form-field appearance="outline" class="flex-1">
             <mat-label>{{ 'WORKFLOWS.NAME' | translate }}</mat-label>
             <input matInput [formControl]="createForm.controls.name" />
@@ -30,6 +30,7 @@
     }
 
     <mat-card-content>
+      <div class="table-wrap">
       <table mat-table [dataSource]="workflows" class="w-full">
 
         <ng-container matColumnDef="name">
@@ -81,6 +82,7 @@
           </tr>
         }
       </table>
+      </div>
     </mat-card-content>
   </mat-card>
 </div>

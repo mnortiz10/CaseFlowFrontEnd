@@ -93,7 +93,7 @@
                 <span class="ticket-number">{{ t.ticketNumber }}</span> · {{ t.title }}
               </span>
               <span class="ticket-sub">
-                {{ 'TICKET_DASHBOARD.CREATED_BY' | translate }} {{ t.createdByName }} · {{ t.createdAt | date:'d MMM, HH:mm' }}
+                {{ 'TICKET_DASHBOARD.CREATED_BY' | translate }} {{ t.createdByName }} · {{ t.createdAt | apiDate | date:'d MMM, HH:mm' }}
               </span>
             </div>
             <span class="ticket-type-tag" [style.background-color]="t.ticketTypeColor + '1A'" [style.color]="t.ticketTypeColor">

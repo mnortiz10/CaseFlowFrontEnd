@@ -20,11 +20,17 @@
 /* ─── Layout ──────────────────────────────────────────────────────── */
 .roles-layout {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
+  align-items: start;
 
-  @media (min-width: 1024px) {
-    grid-template-columns: 1fr 380px;
+  // Only reserve a second column once the permissions panel actually renders —
+  // otherwise the table is left squeezed into an empty grid track (see: table
+  // needing a horizontal scrollbar to show its own action buttons).
+  &.has-panel {
+    @media (min-width: 1024px) {
+      grid-template-columns: minmax(0, 1fr) clamp(300px, 32vw, 380px);
+    }
   }
 }
 

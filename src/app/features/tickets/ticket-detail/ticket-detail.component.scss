@@ -1,0 +1,17 @@
+.detail-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Acciones del estado actual: en móvil, botones apilados a ancho completo */
+@media (max-width: 640px) {
+  .action-row {
+    flex-direction: column;
+    align-items: stretch;
+
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}

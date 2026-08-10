@@ -89,6 +89,15 @@ html, body {
   animation: fadeSlideIn 220ms ease-out;
 
   @media (max-width: 768px) { padding: 16px; }
+  @media (min-width: 1800px) { max-width: 1520px; }
+}
+
+/* ─── Touch: targets cómodos en pantallas táctiles ──────────────────── */
+@media (pointer: coarse) {
+  .mat-mdc-icon-button.mat-mdc-button-base {
+    --mdc-icon-button-state-layer-size: 44px;
+    padding: 10px;
+  }
 }
 
 /* ─── Typography ────────────────────────────────────────────────────── */
@@ -147,6 +156,25 @@ html, body {
   background: var(--cf-surface) !important;
 }
 
+/* ─── Filtros compactos (tickets, reportes, listas) ─────────────────── */
+/* Estas reglas viven acá (global) porque el CSS de componente no atraviesa
+   el encapsulamiento hacia el DOM interno de mat-form-field. */
+.filter-bar,
+.filters-form {
+  @include mat.form-field-density(-4);
+
+  .mat-mdc-form-field-subscript-wrapper { display: none; }
+  .mat-mdc-floating-label { font-size: 0.8125rem; }
+  .mat-mdc-select-value, input.mat-mdc-input-element { font-size: 0.8125rem; }
+}
+
+.assignee-select {
+  .mat-mdc-form-field-subscript-wrapper { display: none; }
+  .mat-mdc-text-field-wrapper { padding: 0 8px; }
+  .mat-mdc-form-field-infix { min-height: 0; padding: 6px 0; }
+  .mat-mdc-select-value { font-size: 0.8125rem; }
+}
+
 /* ─── Mat form field outlines ───────────────────────────────────────── */
 .mdc-text-field--outlined .mdc-notched-outline__leading,
 .mdc-text-field--outlined .mdc-notched-outline__notch,
@@ -170,10 +198,11 @@ html, body {
 }
 
 /* ─── Responsive: dialogs full-width on mobile ──────────────────────── */
+/* Solo panes de diálogo — no forzar ancho a selects/menus/autocomplete */
 @media (max-width: 640px) {
-  .cdk-overlay-pane {
-    max-width: calc(100vw - 32px) !important;
-    width: calc(100vw - 32px) !important;
+  .cdk-overlay-pane:has(.mat-mdc-dialog-container) {
+    max-width: calc(100vw - 24px) !important;
+    width: calc(100vw - 24px) !important;
   }
   .mat-mdc-dialog-surface {
     border-radius: 12px !important;
@@ -196,4 +225,12 @@ body { overflow-x: hidden; }
   .mat-mdc-paginator-page-size {
     margin-right: 0 !important;
   }
+}
+
+/* ─── Print: solo el área del reporte (Reportes → Descargar PDF) ────── */
+@media print {
+  body { background: #fff; overflow: visible; }
+  .shell-sidenav, app-header { display: none !important; }
+  .mat-sidenav-content, .mat-drawer-content { margin-left: 0 !important; }
+  .main-area { overflow: visible !important; }
 }

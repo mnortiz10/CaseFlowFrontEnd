@@ -3,6 +3,37 @@
     "NAME": "CaseFlow",
     "SUBTITLE": "Gestión inteligente de casos y flujos de trabajo"
   },
+  "REPORTS": {
+    "TITLE": "Reportes",
+    "SUBTITLE": "Métricas de tickets y desempeño del equipo",
+    "PRINT_TITLE": "CaseFlow — Reporte de tickets",
+    "GENERATED_AT": "Generado el",
+    "DOWNLOAD_PDF": "Descargar PDF",
+    "GENERATE": "Generar Reporte",
+    "EMPTY_PROMPT_TITLE": "Todavía no generaste ningún reporte",
+    "EMPTY_PROMPT_DESC": "Configurá los filtros que necesites y presioná \"Generar Reporte\" para ver los resultados.",
+    "FILTER_FROM": "Desde",
+    "FILTER_TO": "Hasta",
+    "FILTER_TYPE": "Tipo de ticket",
+    "FILTER_USER": "Usuario",
+    "CLEAR_FILTERS": "Limpiar filtros",
+    "KPI_CREATED": "Tickets creados",
+    "KPI_FINALIZED": "Finalizados",
+    "KPI_ACTIVE": "En curso",
+    "KPI_OVERDUE": "Vencidos",
+    "KPI_AVG_RESOLUTION": "Resolución promedio",
+    "BY_USER_TITLE": "Tickets finalizados por usuario",
+    "BY_TYPE_TITLE": "Tickets finalizados por tipo",
+    "DETAIL_TITLE": "Detalle por usuario",
+    "TICKETS_DETAIL_TITLE": "Detalle de tickets finalizados",
+    "COL_USER": "Usuario",
+    "COL_FINALIZED": "Finalizados",
+    "COL_FINALIZED_BY": "Finalizado por",
+    "COL_FINALIZED_AT": "Finalizado el",
+    "COL_AVG": "Resolución promedio",
+    "COL_RESOLUTION": "Resolución",
+    "EMPTY": "Sin datos para los filtros seleccionados"
+  },
   "NAV": {
     "DASHBOARD": "Dashboard",
     "USERS": "Usuarios",
@@ -12,6 +43,7 @@
     "LOGOUT": "Cerrar sesión",
     "ADMINISTRATION": "Administración",
     "OVERVIEW": "Resumen",
+    "REPORTS": "Reportes",
     "TICKET_MANAGEMENT": "Gestión de Tickets",
     "TICKETS": "Tickets",
     "TICKET_TYPES": "Tipos de Ticket",
@@ -35,7 +67,20 @@
       "PASSWORD_REQUIRED": "La contraseña es requerida",
       "USER_NOT_FOUND": "El usuario no existe.",
       "WRONG_PASSWORD": "Contraseña incorrecta.",
-      "GENERIC": "Error al iniciar sesión."
+      "GENERIC": "Error al iniciar sesión.",
+      "SESSION_EXPIRED": "Tu sesión expiró por inactividad. Iniciá sesión nuevamente."
+    },
+    "CHANGE_PASSWORD": {
+      "TITLE": "Cambiar contraseña",
+      "SUBTITLE": "Debés establecer una nueva contraseña para continuar.",
+      "CURRENT": "Contraseña actual",
+      "NEW": "Nueva contraseña",
+      "CONFIRM": "Confirmar nueva contraseña",
+      "MIN_LENGTH": "Mínimo 8 caracteres",
+      "MISMATCH": "Las contraseñas no coinciden",
+      "SUBMIT": "Cambiar contraseña",
+      "LOGOUT": "Cerrar sesión",
+      "ERROR": "No se pudo cambiar la contraseña"
     }
   },
   "DASHBOARD": {
@@ -79,12 +124,19 @@
       "EDIT_TITLE": "Editar usuario"
     },
     "FIELDS": {
+      "USERNAME": "Usuario",
       "FIRST_NAME": "Nombre",
       "LAST_NAME": "Apellido",
       "EMAIL": "Email",
       "PASSWORD": "Contraseña",
       "ROLES": "Roles",
-      "ACTIVE": "Activo"
+      "ACTIVE": "Activo",
+      "RESET_PASSWORD_SECTION": "Restablecer contraseña",
+      "NEW_PASSWORD": "Nueva contraseña",
+      "NEW_PASSWORD_HINT": "Dejar vacío para no cambiarla",
+      "MUST_CHANGE_PASSWORD": "Debe cambiar la contraseña en el próximo inicio de sesión",
+      "TICKET_TYPES": "Tipos de ticket permitidos",
+      "TICKET_TYPES_HINT": "Sin selección = puede gestionar todos los tipos"
     },
     "VALIDATION": {
       "FIRST_NAME_REQUIRED": "El nombre es requerido",
@@ -110,6 +162,7 @@
       "STATUS": "Estado",
       "LAST_LOGIN": "Último acceso",
       "EMPTY": "No se encontraron usuarios",
+      "EMPTY_HINT": "Creá tu primer usuario para empezar.",
       "NEVER": "Nunca"
     },
     "ACTIONS": {
@@ -126,6 +179,18 @@
       "CREATED": "Usuario creado correctamente",
       "UPDATED": "Usuario actualizado correctamente",
       "DELETED": "Usuario eliminado"
+    },
+    "SESSIONS": {
+      "TITLE": "Historial de sesiones",
+      "TOOLTIP": "Historial de sesiones",
+      "TOTAL_LOGINS": "Inicios de sesión",
+      "TOTAL_EXPIRATIONS": "Expiraciones por inactividad",
+      "TOTAL_ACTIVE": "Tiempo activo",
+      "EMPTY": "Sin eventos registrados",
+      "EVENT_LOGIN": "Inicio de sesión",
+      "EVENT_LOGOUT": "Cierre de sesión",
+      "EVENT_EXPIRED": "Expiró por inactividad",
+      "ACTIVE_FOR": "activo"
     }
   },
   "ROLES": {
@@ -183,7 +248,9 @@
       "TITLE": "Opciones avanzadas",
       "DESC": "Configuraciones adicionales del comportamiento del sistema.",
       "PROMPT_EXTEND_TIME": "Preguntar si extender el vencimiento al guardar un estado",
-      "PROMPT_EXTEND_TIME_HINT": "Al guardar o avanzar de estado en un ticket, se ofrece la opción de extender el tiempo de vencimiento (por defecto 24hs, editable). Podés optar por no agregar tiempo y mantener el vencimiento actual."
+      "PROMPT_EXTEND_TIME_HINT": "Al guardar o avanzar de estado en un ticket, se ofrece la opción de extender el tiempo de vencimiento (por defecto 24hs, editable). Podés optar por no agregar tiempo y mantener el vencimiento actual.",
+      "COMMENT_HISTORY": "Historial de comentarios en los tickets",
+      "COMMENT_HISTORY_HINT": "Activado: cada comentario guardado se acumula en un historial con autor y fecha, y el campo de comentario se limpia. Desactivado: no se muestra el historial y el estado mantiene un único comentario editable en el campo de texto."
     },
     "COMING_SOON_TITLE": "Más configuraciones próximamente",
     "COMING_SOON_DESC": "Notificaciones, integraciones, facturación y más.",
@@ -232,6 +299,7 @@
     "EDIT": "Editar",
     "DELETE": "Eliminar",
     "CREATE": "Crear",
+    "CLEAR": "Limpiar",
     "ACTIONS": "Acciones",
     "STATUS": "Estado",
     "ACTIVE": "Activo",
@@ -310,6 +378,9 @@
     "ADD_OPTION": "Agregar opción",
     "FINAL_FIELDS_HELP": "Los estados finales no tienen tiempo de vencimiento ni checklist. Solo pueden incluir un campo de descripción opcional.",
     "FINAL_ADD_DESCRIPTION": "Agregar campo de descripción (opcional)",
+    "DRAG_HINT": "Arrastrá para reordenar",
+    "NO_STATES": "Este workflow no tiene estados todavía.",
+    "ADD_FIRST_STATE": "Agregar primer estado",
     "TOAST": {
       "CREATED": "Workflow creado",
       "DELETED": "Workflow eliminado",
@@ -327,7 +398,12 @@
     "DESCRIPTION": "Descripción",
     "TYPE": "Tipo",
     "STATE": "Estado",
-    "TIME_IN_STATE": "Tiempo en estado",
+    "TIME_IN_STATE": "Vencimiento",
+    "EXPIRES_IN": "Vence en {{time}}",
+    "EXPIRED_AGO": "Venció hace {{time}}",
+    "COMMENTS": "Historial de comentarios",
+    "COMMENTS_EMPTY": "Sin comentarios en este estado",
+    "COMMENTS_PAST_HINT": "Los comentarios de estados anteriores se ven haciendo clic en cada estado completado de la barra de progreso.",
     "ASSIGNED_TO": "Asignado a",
     "SUB_STATE": "Sub-estado",
     "FILTER_ALL": "Todos",
@@ -337,6 +413,7 @@
     "FILTER_TYPE": "Tipo de ticket",
     "FILTER_STATE": "Estado",
     "FILTER_VIGENCIA": "Vigencia",
+    "FILTER_ASSIGNED": "Asignado a",
     "SUB_STATE_GREEN": "En tiempo",
     "SUB_STATE_YELLOW": "Por vencer",
     "SUB_STATE_RED": "Vencido",
@@ -380,14 +457,17 @@
     "UNASSIGNED": "Sin asignar",
     "SAVE_ASSIGN": "Guardar asignación",
     "FIELD_REQUIRED": "Este campo es obligatorio",
+    "VIEW_STATE_DATA": "Ver datos de {{name}}",
     "TOAST": {
       "CREATED": "Ticket creado",
       "SAVED": "Datos del estado guardados",
       "TRANSITIONED": "Estado actualizado",
       "TIME_EXTENDED": "Tiempo extendido correctamente",
       "REASSIGNED": "Asignación actualizada",
-      "REQUIRED_FIELDS": "Completá los campos obligatorios (*) antes de cambiar de estado"
-    }
+      "REQUIRED_FIELDS": "Completá los campos obligatorios (*) antes de cambiar de estado",
+      "PAST_STATE_UPDATED": "Estado anterior actualizado correctamente"
+    },
+    "EDIT_PAST_STATE": "Editar estado"
   },
   "ERRORS": {
     "UNEXPECTED": "Ocurrió un error inesperado."

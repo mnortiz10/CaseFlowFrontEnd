@@ -9,7 +9,7 @@
     </button>
   </div>
 
-  <div class="roles-layout">
+  <div class="roles-layout" [class.has-panel]="!!selectedRole">
     <!-- Roles table -->
     <mat-card class="roles-table-card">
       <mat-card-header>

@@ -12,6 +12,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { TicketService } from '../../../core/services/ticket.service';
 import { TicketTypeService, TicketTypeDto } from '../../../core/services/ticket-type.service';
 import { UserService, UserDto } from '../../../core/services/user.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-create-ticket-dialog',
@@ -29,6 +30,7 @@ export class CreateTicketDialogComponent implements OnInit {
   private readonly ticketService = inject(TicketService);
   private readonly ticketTypeService = inject(TicketTypeService);
   private readonly userService = inject(UserService);
+  private readonly auth = inject(AuthService);
   private readonly dialogRef = inject(MatDialogRef<CreateTicketDialogComponent>);
 
   saving = false;
@@ -44,7 +46,8 @@ export class CreateTicketDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.ticketTypeService.getAll().subscribe({
-      next: tt => this.ticketTypes = tt.filter(t => t.isActive && t.workflowDefinitionId),
+      next: tt => this.ticketTypes = tt.filter(t =>
+        t.isActive && t.workflowDefinitionId && this.auth.canManageTicketType(t.id)),
     });
     this.userService.getAllActive().subscribe({ next: u => this.users = u });
   }

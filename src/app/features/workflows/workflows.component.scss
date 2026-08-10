@@ -1,0 +1,38 @@
+.list-page {
+  max-width: 1600px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) { padding: 12px !important; }
+}
+
+.list-header {
+  gap: 8px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: stretch;
+
+    button { width: 100%; }
+  }
+}
+
+.create-form-row {
+  @media (max-width: 640px) {
+    flex-wrap: wrap;
+
+    mat-form-field { flex: 1 1 100%; }
+    button { flex: 1; }
+  }
+}
+
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 640px) {
+  .mat-column-description,
+  .mat-column-status {
+    display: none !important;
+  }
+}

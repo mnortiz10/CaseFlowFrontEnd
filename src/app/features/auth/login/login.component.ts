@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,10 +22,11 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly translate = inject(TranslateService);
 
   form = this.fb.group({
@@ -37,6 +38,12 @@ export class LoginComponent {
   error = '';
   hidePassword = true;
 
+  ngOnInit(): void {
+    if (this.route.snapshot.queryParamMap.has('expired')) {
+      this.error = this.translate.instant('AUTH.ERRORS.SESSION_EXPIRED');
+    }
+  }
+
   onSubmit(): void {
     if (this.form.invalid) return;
     this.loading = true;
@@ -44,7 +51,7 @@ export class LoginComponent {
 
     const { identifier, password } = this.form.value;
     this.auth.login(identifier!, password!).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
+      next: res => this.router.navigate([res.user.mustChangePassword ? '/change-password' : '/dashboard']),
       error: (err) => {
         if (err.status === 404) {
           this.error = this.translate.instant('AUTH.ERRORS.USER_NOT_FOUND');

@@ -37,13 +37,17 @@ export class SettingsComponent implements OnInit {
 
   advancedForm = this.fb.group({
     promptExtendTimeOnStateSave: [true],
+    enableCommentHistory: [true],
   });
 
   savingAdvanced = false;
 
   ngOnInit(): void {
     this.tenantService.getSettings().subscribe({
-      next: (s) => this.advancedForm.patchValue({ promptExtendTimeOnStateSave: s.promptExtendTimeOnStateSave }),
+      next: (s) => this.advancedForm.patchValue({
+        promptExtendTimeOnStateSave: s.promptExtendTimeOnStateSave,
+        enableCommentHistory: s.enableCommentHistory,
+      }),
     });
   }
 
@@ -58,7 +62,8 @@ export class SettingsComponent implements OnInit {
   saveAdvanced(): void {
     this.savingAdvanced = true;
     const promptExtendTimeOnStateSave = !!this.advancedForm.value.promptExtendTimeOnStateSave;
-    this.tenantService.updateSettings({ promptExtendTimeOnStateSave }).subscribe({
+    const enableCommentHistory = !!this.advancedForm.value.enableCommentHistory;
+    this.tenantService.updateSettings({ promptExtendTimeOnStateSave, enableCommentHistory }).subscribe({
       next: () => {
         this.savingAdvanced = false;
         this.snackBar.open(
